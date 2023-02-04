@@ -1,0 +1,113 @@
+.form-input {
+  padding: 12px 18px;
+  box-shadow: none !important;
+}
+
+.bg-im {
+  background-image: url("https://pix10.agoda.net/hotelImages/1730437/-1/6108374e8cc4a0c63664681ac77e7ebd.jpg?ca=6&ce=1&s=1024x768");
+}
+.login-form {
+  border-radius: 10px;
+  text-align: left;
+  width: auto;
+  height: auto;
+  /* border: 0ch crimson ; */
+  padding: 20px;
+  top: 60px;
+  justify-content: center;
+  display: flex;
+  margin: auto;
+  width: 240ch;
+  background-color: lavender;
+
+}
+.form-label {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  /* background: #1C8EF9 !important; */
+  min-height: 100vh;
+  display: flex;
+  font-weight: 400;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+span {
+  font-weight: 500;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body,
+html,
+.App,
+#root,
+.auth-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.navbar-light {
+  background-color: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-inner {
+  width: 450px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 45px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.auth-wrapper .form-control:focus {
+  border-color: #167bff;
+  box-shadow: none;
+}
+
+.auth-wrapper h3 {
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+  padding-bottom: 20px;
+}
+
+.custom-control-label {
+  font-weight: 400;
+}
+
+.forgot-password,
+.forgot-password a {
+  text-align: right;
+  font-size: 13px;
+  padding-top: 10px;
+  color: #7f7d7d;
+  margin: 0;
+}
+
+.forgot-password a {
+  color: #167bff;
+}
