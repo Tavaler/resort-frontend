@@ -1,0 +1,12 @@
+.sidebar {
+    height: 100%;
+    position: fixed;
+    left: 0;
+  }
+  
+  .ant-layout-sider {
+    background-color: #001529;
+  }
+  
+
+  

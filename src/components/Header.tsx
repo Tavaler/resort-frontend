@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import { useAppSelector } from "../app/store/configureStore";
 
 const Header = () => {
-
     return (
       <div>
         {/* <!-- Offcanvas Menu Section Begin --> */}

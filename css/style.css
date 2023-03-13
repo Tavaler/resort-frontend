@@ -334,7 +334,8 @@ ul, ol {
 }
 .top-nav .tn-right .language-option:hover .flag-dropdown {
 	top: 40px;
-	opacity: 1;
+	opacity: 1; 
+	/* ความจางของข้อความ */
 	visibility: visible;
 }
 .top-nav .tn-right .language-option img {
@@ -719,7 +720,7 @@ ul, ol {
 	transition: all 0.3s;
 }
 /*------------------------
-  Home Page Room Section 
+  Home Page Room Section
 -------------------------*/
 
 .hp-room-items {
@@ -1227,14 +1228,18 @@ ul, ol {
 -------------------------*/
 
 .room-details-section {
+
 	padding-top: 0;
 	padding-bottom: 80px;
 }
 .room-details-item {
+	/* background-color: #f5b917; */
 	margin-bottom: 50px;
 }
 .room-details-item img {
 	margin-bottom: 40px;
+	
+	/* position: static; */
 }
 .room-details-item .rd-text .rd-title {
 	overflow: hidden;

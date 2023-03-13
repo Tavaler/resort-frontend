@@ -15,13 +15,13 @@ function Login() {
   const navigate = useNavigate();
   const submitForm = async (data: any) => {
     const result = await dispatch(loginAccount(data)).unwrap();
-    console.log(result)
-    if (result.message === "เข้าสู่ระบบสำเร็จ") {
+    console.log(result.data)
+    if (result.msg === "OK") {
       swal({
         title: "เข้าสู่ระบบสำเร็จ",
         icon: "success",
         buttons: [false, "ตกลง"],
-      }).then(() => navigate("/rooms"));
+      }).then(() => navigate("/home"));
     } else {
       swal({
         title: result.message,

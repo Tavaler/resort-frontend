@@ -1,0 +1,114 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import agent from "../API/Agent";
+// import { CartItem } from "../models/cartItem";
+import { HouseBooking } from "../models/houseBooking";
+
+interface HouseBookingState{
+    hbookings: HouseBooking[] | null,
+    status : string;
+
+
+    // detailCart : CartItem | null;
+    // CartdetailLoaded : boolean;
+
+
+}
+
+const initialState : HouseBookingState= {
+    hbookings: null,
+  status: '',
+
+
+  // detailCart: null,
+  // CartdetailLoaded: false
+}
+
+export const fetchHouseBookingAsync = createAsyncThunk<any, any>(
+    "houseBooking/fetchHouseBookingAsync",
+    async (accountId, thunkAPI) => {
+      try {
+        const result = await agent.HouseBooking.GetByidBooking(accountId);
+        return result.data;
+      } catch (error: any) {
+        return thunkAPI.rejectWithValue({ error: error.data });
+      }
+    }
+  );
+
+
+export const addHouseBookingAsync = createAsyncThunk<HouseBooking ,{ accommodationId: string; accountId: string; checkIn: string;checkOut :string }>(
+    "houseBooking/addHouseBookingAsync",
+  async ({ accommodationId, accountId, checkIn,checkOut }, thunkAPI) => {
+      try {
+        let formData = new FormData();
+        formData.append("AccountId", accountId);
+        formData.append("AccommodationId", accommodationId);
+        formData.append("CheckIn", checkIn.toString());
+        formData.append("CheckOut", checkOut.toString());
+        const { result } = await agent.HouseBooking.AddBooking(formData);
+        return result;
+      } catch (error: any) {
+        return thunkAPI.rejectWithValue({ error: error.data });
+      }
+    }
+  );
+
+//   export const updateCartAsync = createAsyncThunk<CartItem, any>(
+//     "cart/updateCartAsync",
+//     async ({ data, amountProduct, idAccount }, thunkAPI) => {
+//       try {
+//         // console.log(data)
+//         let formData = new FormData();
+//         formData.append("ID", data.id);
+//         formData.append("AccountID", idAccount);
+//         formData.append("ProductID", data.product.id);
+//         formData.append("AmountProduct", amountProduct);
+//         const { result } = await agent.Cart.UpdateCrat(formData);
+//         return result;
+//       } catch (error: any) {
+//         return thunkAPI.rejectWithValue({ error: error.data });
+//       }
+//     }
+//   );
+
+
+
+
+
+
+
+export const hbookingSlice = createSlice({
+    name: "housebooking" ,
+    initialState ,
+    reducers:{
+        setHousebooking: (state, action) => {
+            state.hbookings = action.payload;
+          },
+          clearHousebooking: (state) => {
+            state.hbookings = null;
+          },
+
+          // resetDetailFd:(state)=>{
+          //   state.CartdetailLoaded = false;
+          // },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchHouseBookingAsync.fulfilled, (state, action) => {
+        // if(action.payload.message === 'success')
+          
+          state.hbookings = action.payload;
+          state.status = "idle";
+        });
+
+        // builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
+        //   // if(action.payload.msg === 'OK')
+        //   state.detailCart = action.payload;
+        //   // state.detailfd = action.payload;
+        //   state.CartdetailLoaded = true
+        // });
+      },
+
+
+});
+
+export const {setHousebooking,clearHousebooking} = hbookingSlice.actions

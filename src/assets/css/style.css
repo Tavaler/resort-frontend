@@ -107,6 +107,7 @@ ul, ol {
 	margin-top: 10px;
 }
 .set-bg {
+	background-color: #5A4D48;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: top center;
@@ -496,6 +497,7 @@ ul, ol {
 -----------------------*/
 
 .hero-section {
+	background-color: #5A4D48;
 	position: relative;
 	padding-top: 60px;
 	padding-bottom: 100px;
@@ -675,9 +677,11 @@ ul, ol {
 	border-top: 1px solid #e5e5e5;
 }
 .services-section .section-title {
+	background-color: #5A4D48;
 	margin-bottom: 36px;
 }
 .service-item {
+	
 	text-align: center;
 	padding: 30px 35px 18px;
 	-webkit-transition: all 0.3s;

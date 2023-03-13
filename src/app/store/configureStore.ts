@@ -1,14 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { acmdSlice } from './accommodationSlice';
 import { accountSlice } from './accountSlice';
+import { AcmdTypeSilce } from './AcmdTypeSilce';
+import { cratSlice } from './cartSlice';
+import { CategorySilce } from './FdCategorySilce';
+import { hbookingSlice } from './HBookingSlice';
 import { menuSlice } from './menuSlice';
 
 
 export const store = configureStore({
     reducer: {
         account : accountSlice.reducer,
-        menu : menuSlice.reducer
+        menu : menuSlice.reducer,
+        acmd : acmdSlice.reducer,
+        cartItem : cratSlice.reducer,
+        fdCategory : CategorySilce.reducer,
+        housebooking : hbookingSlice.reducer,
+        acmdType : AcmdTypeSilce.reducer
     } ,
   });
 

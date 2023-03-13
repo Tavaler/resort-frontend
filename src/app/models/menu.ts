@@ -2,17 +2,24 @@ export interface FoodDrink {
     fdId:          string;
     fdName:        string;
     fdDescription: string;
-    fdPrice:       number;
+    fdPrice:       any;
     fdIsused:      number;
     dateTime:      Date;
-    fdCategoryId:  number;
+    fdCategoryId:  string;
     fdCategory:    FdCategory;
-    fdImg:         any[];
+    fdImgs:         any[];
 }
 
 export interface FdCategory {
-    fdCategoryId: number;
+    fdCategoryId: string;
     name:         string;
     isUsed:       number;
     dateTime:     Date;
+}
+
+export interface FdImg {
+    fdImgId:       string;
+    fdImgName:     string;
+    createDate:    Date;
+    foodDrinkFdId: string;
 }

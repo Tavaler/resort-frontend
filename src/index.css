@@ -1,11 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
 .form-input {
   padding: 12px 18px;
   box-shadow: none !important;
 }
 
+.overflow-ellipsis {
+  text-overflow: ellipsis;
+}
+.over-text {
+  width: 200px;
+  /* border: 1px solid; */
+  padding: 2px 5px;
+
+  /* Both of the following are required for text-overflow */
+  white-space: nowrap;
+  overflow: hidden;
+
+}
+
 .bg-im {
   background-image: url("https://pix10.agoda.net/hotelImages/1730437/-1/6108374e8cc4a0c63664681ac77e7ebd.jpg?ca=6&ce=1&s=1024x768");
 }
+
 .login-form {
   border-radius: 10px;
   text-align: left;
@@ -21,12 +38,13 @@
   background-color: lavender;
 
 }
+
 .form-label {
   font-size: 0.9rem;
   margin-bottom: 10px;
 }
 
-@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
 
 * {
   box-sizing: border-box;
@@ -110,4 +128,26 @@ html,
 
 .forgot-password a {
   color: #167bff;
+}
+
+
+
+
+
+
+
+
+
+
+#components-layout-demo-top-side .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl #components-layout-demo-top-side .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
 }
