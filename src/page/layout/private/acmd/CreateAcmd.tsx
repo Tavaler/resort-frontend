@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import swal from "sweetalert";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { ErrorMessage, Formik } from "formik";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
   Button,
-  Radio,
   Select,
   InputNumber,
   // Cascader,
@@ -18,13 +16,13 @@ import {
   // Checkbox,
   // Upload,
 } from "antd";
-import { MenuValidate } from "../../../../app/Validate/menuValidate";
 import { useAppDispatch, useAppSelector } from "../../../../app/store/configureStore";
 // import { Result } from "../../../../app/Interfaces/IResponse";
-import { GetCategoryFd } from "../../../../app/store/FdCategorySilce";
 import agent from "../../../../app/api/agent";
 
 import "../privateCss/FdCreate.css"
+import { AcmdValidate } from "../../../../app/Validate/acmdValidate";
+import { GetAcmdType } from "../../../../app/store/AcmdTypeSilce";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -33,21 +31,21 @@ function CreateAcmd() {
   const { AcmdType } = useAppSelector((state) => state.acmdType);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { state } = useLocation();
 
-  console.log(`CategoryFd :${AcmdType}`)
+  console.log(AcmdType)
 
   const value = {
     name: "",
     accommodationTypeId: "",
-    price: 0,
+    quantity: 4,
+    price: 2800,
     detail: "",
-    status:"",
+    status:"1",
     isUsed: 1,
   };
 
   // accommodationId:     string;
-    name:                string;
+  //  name:                string;
   //   quantity:            number;
   //   price:               number;
   //   detail:              string;
@@ -58,12 +56,13 @@ function CreateAcmd() {
   //   accommodationImgs:   AccommodationImg[];
 
   useEffect(() => {
-    dispatch(GetCategoryFd());
+    dispatch(GetAcmdType());
 
   }, []);
 
   const submitForm = async (value: any) => {
-    let result = await agent.Accommodation.createFd(value)
+    console.log(`data :${value}`)
+    let result = await agent.Accommodation.createAcmd(value)
 
     // if (!state) result = await dispatch(CreateMenu(data)).unwrap();
     if (result.statusCode == 200) {
@@ -90,12 +89,12 @@ function CreateAcmd() {
           <div className="col-lg-12 ">
             <div style={{textAlign:"center"}}>
               <p>
-              <h3>เมนูอาหาร</h3>
+              <h3>ที่พัก</h3>
               </p>
             </div>
 
             <Formik
-              validationSchema={MenuValidate}
+              validationSchema={AcmdValidate}
               initialValues={value}
               onSubmit={async (values) => {
                 await new Promise((r) => setTimeout(r, 500));
@@ -110,7 +109,6 @@ function CreateAcmd() {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
                 setFieldValue,
               }) => (
                 <Form
@@ -126,15 +124,15 @@ function CreateAcmd() {
                       style={{ fontFamily: "Sriracha, cursive" }}
                       type="text"
                       size="large"
-                      status={touched.fdName && errors.fdName ? "error" : ""}
-                      name="fdName"
+                      status={touched.name && errors.name ? "error" : ""}
+                      name="name"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="ชื่อ"
-                      value={values.fdName}
+                      value={values.name}
                     />
                     <ErrorMessage
-                      name="fdName"
+                      name="name"
                       component="div"
                       className="text-danger"
                     />
@@ -148,25 +146,25 @@ function CreateAcmd() {
                   
                   size="large"
                   placeholder="Search to Select"
-                  value={values.fdCategoryId}
+                  value={values.accommodationTypeId}
                   onBlur={handleBlur}
                   status={
-                    touched.fdCategoryId && errors.fdCategoryId
+                    touched.accommodationTypeId && errors.accommodationTypeId
                       ? "error"
                       : ""
                   }
                   onChange={(data) => {
-                    setFieldValue("fdCategoryId", data);
+                    setFieldValue("accommodationTypeId", data);
                   }}
-                  options={CategoryFd?.map((data) => {
+                  options={AcmdType?.map((data) => {
                     return {
-                      value: data.fdCategoryId,
+                      value: data.accommodationTypeId,
                       label: data.name,
                     };
                   })}
                 />
                 <ErrorMessage
-                  name="fdCategoryId"
+                  name="accommodationTypeId"
                   component="div"
                   className="text-danger text-st"
                 />
@@ -175,36 +173,51 @@ function CreateAcmd() {
 
                   <Form.Item wrapperCol={{ span: 4 }} label="ราคา">
                     <InputNumber
-                      status={touched.fdPrice && errors.fdPrice ? "error" : ""}
-                      name="fdPrice"
+                      status={touched.price && errors.price ? "error" : ""}
+                      name="price"
+                      type="number"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="ราคา"
+                      value={values.price}
+                    />
+                  </Form.Item>
+                  
+                  
+                  
+
+                  <Form.Item wrapperCol={{ span: 4 }} label="จำนวนห้อง">
+                    <InputNumber
+                      status={touched.quantity && errors.quantity ? "error" : ""}
+                      name="quantity"
                       type="number"
                       
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder="ราคา"
-                      value={values.fdPrice}
+                      placeholder="จำนวนห้อง"
+                      value={values.quantity}
                     />
                   </Form.Item>
 
                   <Form.Item label="รายละเอียด ">
                     <TextArea
                       status={
-                        touched.fdDescription && errors.fdDescription
+                        touched.detail && errors.detail
                           ? "error"
                           : ""
                       }
-                      name="fdDescription"
+                      name="detail"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="รายละเอียด"
-                      value={values.fdDescription}
+                      value={values.detail}
                       rows={4}
                     />
                   </Form.Item>
 
                   <Form.Item label="ยืนยัน">
                     <Button className="col-md-12" htmlType="submit">บันทึก</Button>
-                    <Button className="col-md-12 btn btn-danger" >ยกเลิก</Button>
+                    <Button onClick={()=>navigate("/acmdList")} className="col-md-12 btn btn-danger" >ยกเลิก</Button>
                   </Form.Item>
                 </Form>
               )}

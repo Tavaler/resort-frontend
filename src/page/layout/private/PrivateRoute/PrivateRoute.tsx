@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../../../app/store/configureStore'; 
 
@@ -26,7 +25,7 @@ export const PrivateRoute = ({ roles }: Props) => {
     var obj = JSON.parse(JSON.stringify(location)); //แกะกล่อง
     var path = obj.pathname; // ชื่อพาท
 
-    // localStorage.setItem("savepath", path);
+    localStorage.setItem("savepath", path);
     
     if (!account) {
         // เปลี่ยนเส้นทางพวกเขาไปยังหน้า /login แต่บันทึกตำแหน่งปัจจุบันที่พวกเขาอยู่

@@ -1,0 +1,29 @@
+/* For demo */
+.ant-carousel .slick-slide {
+    text-align: center;
+    /* height: 160px; */
+    /* line-height: 160px; */
+
+
+    /* line-height: 100%; */
+    /* background: #364d79; */
+    overflow: hidden;
+}
+
+
+.responsive-home-image {
+    /* position: initial; */
+    width: 100%;
+    max-width: 90rem;
+    height: 100%;
+    max-height: 39rem;
+}
+
+.img-blur-home-event {
+    filter: blur(2px);
+  }
+
+
+.darkened-image {
+    filter: brightness(50%);
+}

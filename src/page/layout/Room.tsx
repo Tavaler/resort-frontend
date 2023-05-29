@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react'
-import { GetAcmdAll } from '../../app/store/accommodationSlice';
-import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
-import Navbar from '../../components/Navbar'
+import { useEffect } from "react";
+import { GetAcmdAll } from "../../app/store/accommodationSlice";
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import LayoutPubilc from "./pubilc/Layout/LayoutPubilc";
 
 function Room() {
-    const dispatch = useAppDispatch();
-    const { acmdsLoaded, acmd } = useAppSelector((state) => state.acmd);
-    console.log("acmd", acmd);
-    useEffect(() => {
-      if (!acmdsLoaded) dispatch(GetAcmdAll());
-    }, [acmdsLoaded, dispatch]);
+  const dispatch = useAppDispatch();
+  const { acmdsLoaded, acmd } = useAppSelector((state) => state.acmd);
+  console.log("acmd", acmd);
+  useEffect(() => {
+    if (!acmdsLoaded) dispatch(GetAcmdAll());
+  }, [acmdsLoaded, dispatch]);
 
-    
   return (
-    <>
-      <Navbar />
+    <LayoutPubilc>
+      {/* <Navbar /> */}
 
       {/* <!-- Breadcrumb Section Begin --> */}
       <div className="breadcrumb-section">
@@ -40,17 +39,27 @@ function Room() {
           <div className="row">
             {acmd?.map((acmd) => {
               return (
-                <div key={acmd.accommodationId} className="col-lg-4 col-md-6">
-                  <div className="room-item">
-                    <img
-                      src={
-                        "https://localhost:5000/images/" +
-                        acmd.accommodationImgs[0].image
-                      }
-                      style={{ height: "200px" }}
-                      alt=""
-                    />
-                      {/* {menu.fdImgs[0] ?  <img src={"https://localhost:5000/images/"+menu.fdImgs[0].fdImgName} style={{ height: "20rem" }} alt="" /> : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />} */}
+                <div key={acmd.accommodationId}  className="col-lg-4 col-md-6">
+                  <div style={{ background: "#fff" }} className="room-item shadow p-3 mb-5 bg-body-tertiary rounded">
+
+                    {acmd.accommodationImgs[0] ? (
+                      <img
+                        src={
+                          "https://localhost:5000/images/" +
+                          acmd.accommodationImgs[0].image
+                        }
+                        style={{ height: "200px" }}
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                        style={{ height: "20rem" }}
+                        alt=""
+                      />
+                    )}
+
+                    {/* {menu.fdImgs[0] ?  <img src={"https://localhost:5000/images/"+menu.fdImgs[0].fdImgName} style={{ height: "20rem" }} alt="" /> : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />} */}
 
                     {/* <img src="img/room/room-1.jpg" alt="" /> */}
                     <div className="ri-text">
@@ -71,24 +80,25 @@ function Room() {
                           <tr>
                             <td className="r-o">สถานะ:</td>
                             {/* <td>ว่าง</td> */}
-                            {acmd.isUsed}
-                      {/* {menu.fdImgs[0] ?  <img src={"https://localhost:5000/images/"+menu.fdImgs[0].fdImgName} style={{ height: "20rem" }} alt="" /> : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />} */}
-
+                            {// detailacmd?.status == "1" ?
+                            acmd?.isUsed == 1 ? <td>ว่าง</td> : <td>ไม่ว่าง</td>}
+                            {/* {menu.fdImgs[0] ?  <img src={"https://localhost:5000/images/"+menu.fdImgs[0].fdImgName} style={{ height: "20rem" }} alt="" /> : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />} */}
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td className="r-o ">Services:</td>
-                            <td >
-                                <p className='overflow-ellipsis over-text'>
-                                      {acmd.detail}
-                                </p>
-                              
-                                </td>
-                          </tr>
+                            <td>
+                              <p className="overflow-ellipsis over-text">
+                                {acmd.detail}
+                              </p>
+                            </td>
+                          </tr> */}
                         </tbody>
                       </table>
-                      <a className="primary-btn" href={`/roomsdetail/${acmd.accommodationId}`}>
-                      รายละเอียด
-
+                      <a
+                        className="primary-btn"
+                        href={`/roomsdetail/${acmd.accommodationId}`}
+                      >
+                        รายละเอียด
                       </a>
                     </div>
                   </div>
@@ -98,7 +108,7 @@ function Room() {
 
             {/* ------------------------------------ */}
 
-            <div className="col-lg-4 col-md-6">
+            {/* <div className="col-lg-4 col-md-6">
               <div className="room-item">
                 <img
                   src="img/room/room-2.jpg"
@@ -213,7 +223,7 @@ function Room() {
 
             <div className="col-lg-4 col-md-6">
               <div className="room-item">
-                <img src="img/room/room-5.jpg" alt="" />
+                <img src="./assets/img/room/room-5.jpg" alt="" />
                 <div className="ri-text">
                   <h4>Room With View</h4>
                   <h3>
@@ -290,12 +300,14 @@ function Room() {
                 </a>
               </div>
             </div>
+
+             */}
           </div>
         </div>
       </section>
       {/* <!-- Rooms Section End --> */}
-    </>
+    </LayoutPubilc>
   );
 }
 
-export default Room
+export default Room;

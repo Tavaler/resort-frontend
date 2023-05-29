@@ -1,11 +1,10 @@
 import { ErrorMessage, Form, Formik } from "formik";
 import swal from "sweetalert";
 import { Link, useNavigate } from "react-router-dom";
-import { loginAccount, registerAccount } from "../app/store/accountSlice";
+import { registerAccount } from "../app/store/accountSlice";
 import { useAppDispatch } from "../app/store/configureStore";
-import { LoginValidate, RegisterValidate } from "./AccontValidate";
+import { RegisterValidate } from "./AccontValidate";
 import { Input } from "antd";
-import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Avatar, Box, createTheme, CssBaseline, Grid, Paper, ThemeProvider, Typography } from "@mui/material";
 
@@ -95,7 +94,6 @@ function Register() {
               handleChange,
               handleBlur,
               handleSubmit,
-              isSubmitting,
             }) => (
               <Form onSubmit={handleSubmit} style={{ backgroundColor: "" }}>
                 <div className="mb-3">

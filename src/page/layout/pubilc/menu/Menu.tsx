@@ -1,20 +1,67 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../app/store/configureStore";
 import { GetMenuAll } from "../../../../app/store/menuSlice";
-import Navbar from "../../../../components/Navbar";
+import Swal from "sweetalert2";
+import { addCartItemAsync } from "../../../../app/store/cartSlice";
+import LayoutPubilc from "../Layout/LayoutPubilc";
+import { PlusCircleFilled } from "@ant-design/icons";
+import { URLSever } from "../../../../util/util";
 
 function Menu() {
+  const { account } = useAppSelector((state) => state.account);
+  // const { carts } = useAppSelector((state) => state.cartItem);
+
+  const [amount, 
+    // setAmount
+  ] = useState<Number | any>(1); // จำนวนสินค้าที่เราจะเพิ่มใส่ตะกร้า
+
+
   const dispatch = useAppDispatch();
   const { productsLoaded, fds } = useAppSelector((state) => state.menu);
   console.log("menu", fds);
+
+  // const item = carts?.find((i) => i.fdId);
+
+  const AddCart = async (accountId: any, fdId: any, amount: any) => {
+    if (account) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "เพิ่มลงตะกร้าแล้ว",
+        showConfirmButton: false,
+        timer: 1000,
+      })
+        .then(() => {
+          const result: any = dispatch(
+            addCartItemAsync({
+              accountId: accountId,
+              fdId: fdId,
+              amount: amount,
+            })
+          );
+          console.log(result)
+        })
+        .then(() => {
+          window.location.replace("/menus");
+        });
+    } else
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "กรุณาเข้าสู่ระบบ",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+  };
+  
   useEffect(() => {
     if (!productsLoaded) dispatch(GetMenuAll());
   }, [productsLoaded, dispatch]);
 
   return (
-    <>
-      <Navbar />
+    <LayoutPubilc>
+      {/* <Navbar /> */}
       {/* <!-- Breadcrumb Section Begin --> */}
       <div className="breadcrumb-section">
         <div className="container">
@@ -41,53 +88,86 @@ function Menu() {
             {/* ------------------------------------------------------------------------- */}
             {fds?.map((menu) => {
               return (
-              
-                  <div  key={menu.fdId} className="col-lg-4 col-md-6">
-                    <div style={{ background: "#fff"}}  className="room-item">
-                      {/* {menu.fdImgs == null} */}
-                      {/* <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }}  alt="" /> */}
-                      {menu.fdImgs[0] ?  <img src={"https://localhost:5000/images/"+menu.fdImgs[0].fdImgName} style={{ height: "20rem" }} alt="" /> : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />}
-                     
-                      
-                      <div className="ri-text">
-                        <h4>{menu.fdName}</h4>
-                        <h3>
-                          {menu.fdPrice} ฿<span></span>
-                        </h3>
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className="r-o">ขนาด:</td>
-                              <td>30 ft</td>
-                            </tr>
-                            <tr>
-                              <td className="r-o">ประเภท:</td>
-                              <td>{menu.fdCategory.name}</td>
-                            </tr>
-                            <tr>
-                              {/* <td className="r-o">Bed:</td>
-                              <td>King Beds</td> */}
-                            </tr>
-                            <tr>
-                              <td className="r-o over-text">คำอธิบาย</td>
-                              <td className="overflow-ellipsis">{menu.fdDescription}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        
-                        <a className="primary-btn" href={`/menudetail/${menu.fdId}`}>
+                <div key={menu.fdId} className=" col-lg-4 col-md-6 ">
+                  <div
+                    style={{ background: "#fff" }}
+                    className="room-item shadow p-3 mb-5 bg-body-tertiary rounded"
+                  >
+                    {/* {menu.fdImgs == null} */}
+                    {/* <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }}  alt="" /> */}
+                    {menu.fdImgs ? (
+                      <img
+                        src={
+                          URLSever +
+                          menu.fdImgs[0].fdImgName
+                        }
+                        style={{ height: "20rem" }}
+                        alt={
+                          URLSever +
+                          menu.fdImgs[0].fdImgName
+                        }
+                      />
+                    ) : (
+                      <img
+                        src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                        style={{ height: "20rem" }}
+                        alt=""
+                      />
+                    )}
 
-                        
-                          รายละเอียดอื่นๆ
-                        </a>
-                      </div>
+                    <div className="ri-text">
+                      <h4>{menu.fdName}</h4>
+                      <h3>
+                        {menu.fdPrice} ฿<span></span>
+                      </h3>
+
+                      <table>
+                        <tbody>
+                          {/* <tr>
+                            <td className="r-o">ขนาด:</td>
+                            <td>30 ft</td>
+                          </tr> */}
+                          <tr>
+                            <td className="r-o">ประเภท:</td>
+                            <td>{menu.fdCategory.name}</td>
+                          </tr>
+                          <tr>
+                            {/* <td className="r-o">Bed:</td>
+                              <td>King Beds</td> */}
+                          </tr>
+                          <tr>
+                            <td className="r-o over-text">คำอธิบาย</td>
+                            <td className="overflow-ellipsis">
+                              {menu.fdDescription}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <a
+                        className="primary-btn"
+                        href={`/menudetail/${menu.fdId}`}
+                      >
+                        รายละเอียดอื่นๆ
+                      </a>
+                      &nbsp;
+                      &nbsp;
+                      &nbsp;
+                      <a style={{color:"green"}}
+                        className="success-btn"
+                        onClick={() =>
+                          AddCart(account?.accountId, menu?.fdId, amount)
+                        }
+                      >
+                        <PlusCircleFilled />
+                      </a>
                     </div>
                   </div>
-
+                </div>
               );
             })}
             {/* ------------------------------------------------------------------------- */}
-            <div className="col-lg-4 col-md-6">
+            {/* <div className="col-lg-4 col-md-6">
               <div className="room-item">
                 <img src="img/58426.jpeg" style={{ height: "20rem" }}  alt="" />
                 <div className="ri-text">
@@ -111,7 +191,7 @@ function Menu() {
                       </tr>
                       <tr>
                         <td className="r-o">Services:</td>
-                        <td>22222222222222...</td>
+                        <td >22222222222ffffffffffffffffffff222ddddddddd</td>
                       </tr>
                     </tbody>
                   </table>
@@ -120,7 +200,7 @@ function Menu() {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* ----------------------------------------------------------------------- */}
             {/* <div className="col-lg-4 col-md-6">
@@ -161,7 +241,7 @@ function Menu() {
           </div>
         </div>
       </section>
-    </>
+    </LayoutPubilc>
   );
 }
 

@@ -8,17 +8,14 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, theme ,MenuProps } from "antd";
 // import ProductAdmin from "../Product/ProductAdmin";
-import FdList from "../page/layout/private/menu/FdList";
 // import DashboardPage from "../Dashboard/DashboardPage";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../app/store/configureStore";
 // import { resetProductParams } from "../../../Stone/productSlice";
 
 const { Header, Sider, Content } = Layout;
 
 function Sidebar({ children }: any) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },

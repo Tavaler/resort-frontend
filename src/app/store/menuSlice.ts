@@ -1,6 +1,5 @@
-import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import agent from "../api/agent";
-import { Result } from "../Interfaces/IResponse";
 import { FoodDrink } from "../models/menu";
 
 interface MenuState{
@@ -29,6 +28,17 @@ export const GetMenuAll = createAsyncThunk<FoodDrink[]>(
             return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
+);
+
+export const GetMenuAllV2 = createAsyncThunk<any>(
+  'FoodDrink/GetMenuAll',
+  async (_, thunkAPI) => {
+      try {
+          return await agent.FoodDrink.getFDAll();
+      } catch (error: any) {
+          return thunkAPI.rejectWithValue({ error: error.data });
+      }
+  }
 );
 
 
@@ -115,6 +125,7 @@ export const menuSlice = createSlice({
             state.fds = action.payload
             state.productsLoaded = true
         });
+
 
         builder.addCase(GetByIdFd.fulfilled, (state, action) => {
             // if(action.payload.msg === 'OK')

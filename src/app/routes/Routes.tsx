@@ -1,18 +1,19 @@
-import React from 'react'
 import { Route, Routes } from "react-router-dom";
 import { PrivateLogin, PrivateRoute } from '../../components/PrivateRoute';
 import Sidebar from '../../components/Sidebar';
-import Homepage from '../../page/layout/private/homepage';
+// import Homepage from '../../page/layout/private/homepage';
 import CreateMenu from '../../page/layout/private/menu/CreateMenu';
-import EditMenu from '../../page/layout/private/menu/EditMenu';
-import FdList from '../../page/layout/private/menu/FdList';
-import UploadImgsMenu from '../../page/layout/private/menu/UploadImgsMenu';
+// import FdList from '../../page/layout/private/menu/FdList';
+//import UploadImgsMenu from '../../page/layout/private/menu/UploadImgsMenu';
 import Datepicker from '../../page/layout/private/userList';
 import CartV2 from '../../page/layout/pubilc/cart/cartV2';
 import Menu from '../../page/layout/pubilc/menu/Menu';
 import MenuDetail from '../../page/layout/pubilc/menu/menu-detail';
 import Login from '../../page/Login';
 import Register from '../../page/Register';
+import { RoleInfo } from '../models/role';
+import Home from "../../page/layout/Home";
+import Homepage from "../../page/layout/private/Homepage";
 // import ProductList from '../../features/product/ProductList';
 // import HomePage from '../../features/home/HomePage';
 // import Login from '../../features/account/Login';
@@ -32,11 +33,11 @@ import Register from '../../page/Register';
 // import TestPage from "../../features/TestPage";
 // import ProductFormPrivate from "../../features/private/product/ProductFormPrivate";
 
-import { RoleInfo } from "../models/Role";
+//import { RoleInfo } from "../models/Role";
 
 export const mainRoutes = (
          <Routes>
-           <Route path="/" element={<Homepage />} />
+           <Route path="/" element={<Home />} />
            <Route
              path="/login"
              element={
@@ -74,7 +75,8 @@ export const mainRoutes = (
            <Route path="/menus" element={<Menu />} />
            <Route path="/menudetail/:id" element={<MenuDetail />} />
            {/* <Route path='/detail/:id' element={<Details />} /> */}
-
+           
+           
            <Route path="/privatehome" element={<Homepage />} />
 
            <Route path="/date" element={<Datepicker />} />

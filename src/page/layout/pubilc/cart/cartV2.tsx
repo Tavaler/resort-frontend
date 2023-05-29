@@ -1,127 +1,218 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import agent from "../../../../app/api/agent";
-import { fetchCartAsync, itemPlusCartAsync } from "../../../../app/store/cartSlice";
-import { useAppDispatch, useAppSelector } from "../../../../app/store/configureStore";
+import useCart from "../../../../app/hook/useCart";
+import {
+  DeletCart,
+  fetchCartAsync
+} from "../../../../app/store/cartSlice";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../app/store/configureStore";
 import Navbar from "../../../../components/Navbar";
-import "./cartV2.css"
+import "./cartV2.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { Form, Select } from "antd";
+import Swal from "sweetalert2";
+import useHBorder from "../../../../app/hook/useHBorder";
+import { OrderCreate, OrderItem } from "../../../../app/models/order";
+import { Formik } from "formik";
 
 function cartV2() {
-  const { account } = useAppSelector(state => state.account);
-  const { carts } = useAppSelector(state => state.cartItem);
+  const { account } = useAppSelector((state) => state.account);
+  // const { carts } = useAppSelector(state => state.cartItem);
+  const { carts, subtotal } = useCart();
 
+  const { hborderV2 } = useHBorder();
+  // console.log("hborder",hborder)
+
+  const [idaddress, setId] = useState<string>("");
   
-// const { carts } = useAppSelector(state => state.crat);
+  // const { carts } = useAppSelector(state => state.crat);
   // const account = JSON.parse(localStorage.getItem("account")!);
-const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-useEffect(() => {
- dispatch(fetchCartAsync(account?.accountId));
-//  dispatch(itemPlusCartAsync(carts.))
- console.log({carts})
+  const value = {
 
-//  console.log({account})
-}, [dispatch,carts]); ///,carts]
+    accommodationId: "",
 
-  // const [amount, setAmount] = useState<Number | any>(1); // จำนวนสินค้าที่เราจะเพิ่มใส่ตะกร้า
-  // const { id } = useParams<{ id: any }>();
+  };
+  useEffect(() => {
+    //  if (!carts)
+    //  dispatch(fetchCartAsync(account?.accountId));
+    //  dispatch(itemPlusCartAsync(carts.))
+    //  console.log({account})
+  }, [dispatch, carts]); ///,carts]
 
-  // const dispatch = useAppDispatch();
-  // const { productsdetailLoaded, detailfd } = useAppSelector(
-  //   (state) => state.cartItem
-  // );
+  const DeleteCart = (id: any) => {
+    Swal.fire({
+      // title: "ต้องการจะลบรายการสินค้าที่สั่งหรือไม่?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Deleted!", "Your file has been deleted.", "success").then(
+          async () => {
+            await dispatch(DeletCart(id)).then(() =>
+              dispatch(fetchCartAsync(account?.accountId))
+            );
+          }
+        );
+      }
+    });
+  };
 
   // console.log("detailfd", detailfd);
-  async function onChangeNumberCart({ value, data }: any) {
-    var result: any = dispatch(
-      itemPlusCartAsync({
-        data: data,
-        // value: data.id
-        // v : data.id
-        // amountProduct: value,
-        // idAccount: accountid?.id,
-      })
-    );
-    console.log(result)
-    // if(result.msg === "OK"){
-    //   dispatch(fetchCartAsync(account?.accountId));
-    // }
+  async function onChangeNumberCartPlus(id: any) {
+    console.log(id);
+      await agent.Cart.ItemPlusCart({id})
+    //dispatch(itemPlusCartAsync({id}));
+
+    dispatch(fetchCartAsync(account?.accountId));
   }
 
+  async function onChangeNumberCartRemove(id: any) {
+    console.log(id);
+      await agent.Cart.ItemRemoveCart({id})
+    //dispatch(itemPlusCartAsync({id}));
+    dispatch(fetchCartAsync(account?.accountId));
+  }
+  // dispatch(fetchCartAsync(account?.accountId));
 
+  const orderreuest: OrderCreate = {
+    total: subtotal,
+    accommodationId: idaddress,
+    accountId: account?.accountId,
+    orderItem: carts
+      ? carts.map(
+          (cart) => 
+            ({
+              idCartItem: cart.id,
+              fdId: cart.fdId,
+              amount: cart.amount
+              
 
-  
+    
+            } as OrderItem ||console.log(cart.id)) 
+            
+        )
+      : [],
+  };
+
+  const onClickOrder = async (id:any) => {
+    setId(id)
+    // console.log(id)
+    console.log(orderreuest)
+
+    const result = await agent.Order.create(orderreuest);
+    console.log(result)
+    if (carts?.length! > 0) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "บันทึกสำเร็จ",
+        showConfirmButton: false,
+        timer: 1000,
+       }).then(() => dispatch(fetchCartAsync(account?.accountId)))
+      //}).then( async() => await agent.Order.create(orderreuest)).then(() => dispatch(fetchCartAsync(account?.accountId)))
+
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "บันทึกไม่สำเร็จ",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    }
+    //console.log(result);
+  };
+
   return (
     <div>
       <Navbar />
 
       <div className="main">
-        <h1>Shopping cart</h1>
-        <h2 className="sub-heading">{carts?.length}</h2>
+        <h1>อาหาร</h1>
+        <h2 className="sub-heading">
+          รายการการที่เลือก : {carts?.length} รายการ
+        </h2>
 
         <section className="shopping-cart">
+          {carts?.map((cart) => {
+            return (
+              <div key={cart.id} className="card rounded-3 mb-4">
+                <div className="card-body p-4">
+                  <div className="row d-flex justify-content-between align-items-center">
+                    <div className="col-md-2 col-lg-2 col-xl-2">
+                      <img
+                        src={cart.fdImg}
+                        className="img-fluid rounded-3"
+                        alt="Cotton T-shirt"
+                      />
+                    </div>
+                    <div className="col-md-3 col-lg-3 col-xl-3">
+                      <p className="lead fw-normal mb-2">{cart.fdName}</p>
+                      <p>
+                        ประเภท:
+                        <span className="text-muted">
+                          {" "}
+                          {cart.fdCategoryName}
+                        </span>{" "}
+                      </p>
+                    </div>
+                    <div className="col-md-3 col-lg-3 col-xl-2 d-flex">
+                      <button className="btn btn-link px-2"
+                      onClick={() => onChangeNumberCartRemove(cart.id)}
+                      >
 
-        {carts?.map((cart)=>{
-                return <>
-          <ol className="ui-list shopping-cart--list" id="shopping-cart--list">
-            {/* <script id="shopping-cart--list-item-template" type="text/template"> */}
+                        <MinusOutlined />
+                      </button>
 
-            
+                      <input
+                      disabled={false}
+                        id="form1"
+                        min="0"
+                        name="quantity"
+                        value={cart.amount}
+                        type="number"
+                        className="form-control form-control-sm"
+                      />
 
-<li  className="_grid shopping-cart--list-item">
-              <div className="_column product-image">
-                <img
-                  style={{ height: "100%", width: "100%" }}
-                  className="product-image--img"
-                  //src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScULwPMUZpqrl8ZLObUclIKeaZY6IQjuJdqxLxLcg6f_PfpGUuY5ZLniKUBFbyRWFJpjI&usqp=CAU"
-                  src={cart.fdImg}
-                  alt="Item image"
-                />
-              </div>
-              <div className="_column product-info">
-                <h4 className="product-name">{cart.fdName}</h4>
-                <p className="product-desc">{cart.fdCategoryName}</p>
-                <div className="price product-single-price">{cart.fdPrice}฿</div>
-              </div>
-              <div
-                className="_column product-modifiers"
-                data-product-price="{{=price}}"
-              >
-                <div className="_grid">
-                  <button className="_btn _column product-subtract">
-                    &minus;
-                  </button>
-                  <div className="_column product-qty">{cart.amount}</div>
-                  <button 
-                  onClick={()=>onChangeNumberCart(cart.id)} 
-                  className="_btn _column product-plus">+</button>
+                      <button
+                        className="btn btn-link px-2"
+                        onClick={() => onChangeNumberCartPlus(cart.id)}
+                      >
+                        <PlusOutlined />
+                      </button>
+                    </div>
+                    <div className="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                      <h5 className="mb-0">{cart.sumAmountPrice}</h5>
+                    </div>
+                    <div className="col-md-1 col-lg-1 col-xl-1 text-end">
+                      <a
+                        onClick={() => DeleteCart(cart.id)}
+                        className="text-danger"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <button className="_btn entypo-trash product-remove">
-                  Remove
-                </button>
-                <div className="price bg-primary product-total-price">
-                  {cart.sumAmountPrice}฿
-                </div>
               </div>
-            </li>
+            );
+          })}
 
-{/* {cart.} */}
-                
-               
-
-
-
-
-
-            {/* </script> */}
-          </ol>
-          </>
-              })}
-
-          <footer className=" cart-totals ">
+          {/* <div className=" cart-totals " style={{backgroundColor:"#fff"}}>
             <div className="_column subtotal">
               <div className="cart-totals-key">Subtotal</div>
-              <div className="cart-totals-value">$0.00</div>
+              <div className="cart-totals-value">{subtotal} ฿</div>
             </div>
             <div className="_column shipping">
               <div className="cart-totals-key">Shipping</div>
@@ -140,7 +231,101 @@ useEffect(() => {
                 Checkout
               </button>
             </div>
-          </footer>
+          </div> */}
+
+          <div className="card mb-4">
+            <div className="card-body p-4 d-flex flex-row">
+              <div className="form-outline flex-fill">
+                {/* <input type="text" id="form1" className="form-control form-control-lg" /> */}
+                <label className="form-label" htmlFor="form1">
+                  ราคารวม : {subtotal}฿
+                </label>
+
+                <Formik
+              // validationSchema={AcmdValidate}
+              initialValues={value}
+              onSubmit={async (values) => {
+                await new Promise((r) => setTimeout(r, 500));
+                console.log(values);
+                //setId(value.accommodationId)
+                console.log(orderreuest)
+                // console.log(value.accommodationId)
+                // submitForm(values);
+                console.log("gggg",values)
+                onClickOrder(values.accommodationId)
+                
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleSubmit,
+                setFieldValue,
+              }) => (
+                              <Form
+                  onFinish={handleSubmit}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 14 }}
+                  layout="horizontal"
+                  // disabled={componentDisabled}
+                  style={{ maxWidth: 600 }}
+                >
+                <Form.Item label="">
+                  <Select
+                    className="col-md-4"
+                    style={{ padding: "7px" }}
+                    size="large"
+                    placeholder="เลือกที่อยู่จัดส่ง"
+                    value={values.accommodationId}
+                    
+                    onBlur={handleBlur}
+                    status={
+                      touched.accommodationId && errors.accommodationId
+                        ? "error"
+                        : ""
+                    }
+                    onChange={(data) => {
+                      setFieldValue("accommodationId", data);
+                      setId(data)
+                    }}
+                    options={hborderV2?.map((data) => {
+                      ///if(data?.status == PaymentStatus.WorkInProgress )
+                      return {
+                        value: data.acmdId,
+                        label: data.name,
+                        
+                      };
+                    })}
+                    
+                      //   CategoryFd?.map((data) => {
+                      //   return {
+                      //     value: data.fdCategoryId,
+                      //     label: data.name,
+                      //   };
+                      // }
+                      // )
+                    
+                  />
+                  {/* <ErrorMessage
+                      name="fdCategoryId"
+                      component="div"
+                      className="text-danger text-st"
+                    /> */}
+                </Form.Item>
+              
+
+              <button type="submit" 
+             
+              className="btn btn-outline-warning ms-3">
+                ยืนยัน
+              </button>
+              </Form>)}
+              </Formik>
+            </div>
+            </div>
+          </div>
         </section>
       </div>
       {/* <div className="container">

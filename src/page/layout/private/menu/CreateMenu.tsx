@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import swal from "sweetalert";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { ErrorMessage, Formik } from "formik";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
   Button,
-  Radio,
   Select,
-  InputNumber,
   // Cascader,
   // DatePicker,
   // InputNumber,
@@ -25,8 +22,7 @@ import { GetCategoryFd } from "../../../../app/store/FdCategorySilce";
 import agent from "../../../../app/api/agent";
 
 import "../privateCss/FdCreate.css"
-import { useDropzone } from "react-dropzone";
-import AddImage from "./AddImage";
+// import AddImage from "./AddImage";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -35,14 +31,13 @@ function CreateMenu() {
   const { CategoryFd } = useAppSelector((state) => state.fdCategory);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { state } = useLocation();
 
   console.log(`CategoryFd :${CategoryFd}`)
 
   const value = {
     fdName: "",
     fdCategoryId: "",
-    fdPrice: 0,
+    fdPrice: "",
     fdDescription: "",
     fdIsused: 1,
   };
@@ -102,7 +97,6 @@ function CreateMenu() {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
                 setFieldValue,
               }) => (
                 <Form
@@ -163,7 +157,7 @@ function CreateMenu() {
                   </Form.Item>
 
                   <Form.Item wrapperCol={{ span: 4 }} label="ราคา">
-                    <InputNumber
+                    <Input
                       status={touched.fdPrice && errors.fdPrice ? "error" : ""}
                       name="fdPrice"
                       type="number"
@@ -190,13 +184,17 @@ function CreateMenu() {
                     />
                   </Form.Item>
 
-                  <AddImage />
+                  {/* <AddImage /> */}
 
                   <Form.Item label="ยืนยัน">
                     <Button className="col-md-12" htmlType="submit">
                       บันทึก
                     </Button>
-                    <Button className="col-md-12 btn btn-danger">ยกเลิก</Button>
+                    <Button 
+                    onClick={
+                      () => navigate("/fdList")
+                    } 
+                    className="col-md-12 btn btn-danger">ยกเลิก</Button>
                   </Form.Item>
                 </Form>
               )}

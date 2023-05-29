@@ -1,6 +1,4 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-
 import CssBaseline from "@mui/material/CssBaseline";
 
 // import Link from "@mui/material/Link";
@@ -19,7 +17,6 @@ import swal from "sweetalert";
 import { LoginValidate } from "./AccontValidate";
 import { ErrorMessage, Form, Formik } from "formik";
 import { Input } from "antd";
-import Swal from "sweetalert2";
 
 const value = { email: "", password: "" };
 
@@ -147,7 +144,6 @@ const theme = createTheme();
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
               }) => (
                 <Form onSubmit={handleSubmit} style={{ backgroundColor: "" }}>
                   <div className="mb-3">

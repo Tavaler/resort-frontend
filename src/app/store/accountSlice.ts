@@ -1,8 +1,10 @@
-import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import agent from "../api/agent";
-import { Login, Register, Role } from "../models/user";
+import { Account, Login, Register, Role } from "../models/user";
 
 interface AccountState {
+  user: Account[] | null;
+  userLoaded : boolean;
   account: Register | null;
   roles: Role[] | null;
   token: string | null;
@@ -12,6 +14,8 @@ const initialState: AccountState = {
   roles: null,
   account: null,
   token: null,
+  user: null,
+  userLoaded: false
 };
 
 export interface setUpAccount {
@@ -22,6 +26,17 @@ export interface setUpAccount {
 export const loadAccountStorage = () =>
   JSON.parse(localStorage.getItem("account")!);
 
+export const GetAll = createAsyncThunk<Account[]>(
+  "user/GetAll",
+  async (_, thunkAPI) => {
+    try {
+      return await agent.Account.getAll();
+    } catch (error:any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
+  }
+);
+
 export const loginAccount = createAsyncThunk<any, Login>(
   "user/Login",
   async (data, thunkAPI) => {
@@ -30,7 +45,7 @@ export const loginAccount = createAsyncThunk<any, Login>(
       formData.append("email", data.email);
       formData.append("password", data.password);
       const result = await agent.Account.login(formData);
-      
+
       const { ...payload } = result;
       if (payload.result) {
         const token = payload.result.token;
@@ -43,7 +58,7 @@ export const loginAccount = createAsyncThunk<any, Login>(
       }
       localStorage.setItem("account", JSON.stringify(result));
       return payload;
-    } catch (error) {
+    } catch (error:any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }
   }
@@ -52,29 +67,28 @@ export const loginAccount = createAsyncThunk<any, Login>(
 // ------------------------------------------------------------------
 
 export const fetchAccount = createAsyncThunk<Register>(
-    "user/fetchAccount",
-    async (_, thunkAPI) => {
-      const account = loadAccountStorage();
-      thunkAPI.dispatch(setAccount(account));
-      try {
-        const data = await agent.Account.getAccountID(account.result.accountId);
-        
-        localStorage.setItem(
-          "account",
-          JSON.stringify({ ...account, account: data })
-        );
-      ;
-        return data;
-      } catch (error: any) {
-        return thunkAPI.rejectWithValue({ error: error.data });
-      }
-    },
-    {
-      condition: () => {
-        if (!localStorage.getItem("account")) return false;
-      },
+  "user/fetchAccount",
+  async (_, thunkAPI) => {
+    const account = loadAccountStorage();
+    thunkAPI.dispatch(setAccount(account));
+    try {
+      const data = await agent.Account.getAccountID(account.result.accountId);
+
+      localStorage.setItem(
+        "account",
+        JSON.stringify({ ...account, account: data })
+      );
+      return data;
+    } catch (error:any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
     }
-  );
+  },
+  {
+    condition: () => {
+      if (!localStorage.getItem("account")) return false;
+    },
+  }
+);
 
 // ------------------------------------------------------------------
 
@@ -93,11 +107,12 @@ export const registerAccount = createAsyncThunk<any, Register>(
       const result = await agent.Account.register(formData);
       console.log(result);
       return result;
-    } catch (error) {
+    } catch (error:any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }
   }
 );
+
 export const accountSlice = createSlice({
   name: "account",
   initialState,
@@ -106,7 +121,7 @@ export const accountSlice = createSlice({
       state.account = action.payload.account;
       if (action.payload.token) state.token = action.payload.token;
     },
-    setTingAccount: (state, action) => {
+    setTingAccount: (_state, action) => {
       const { account, token } = action.payload;
       localStorage.setItem(
         "account",
@@ -123,6 +138,11 @@ export const accountSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(GetAll.fulfilled, (state, action) => {
+      state.user = action.payload
+      state.userLoaded = true
+  });
+
     builder.addCase(loginAccount.fulfilled, (state, action) => {
       if (action.payload.result) {
         state.account = action.payload.result.account;

@@ -1,20 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import agent from "../API/Agent";
+import agent from "../api/agent";
 import { CartItem } from "../models/cartItem";
 
 interface CartState{
     carts: CartItem[] | null,
     status : string;
+    CartdetailLoaded : boolean;
+
 
 
     // detailCart : CartItem | null;
-    // CartdetailLoaded : boolean;
 
 
 }
 
 const initialState : CartState= {
   carts: null,
+  CartdetailLoaded : false,
   status: '',
 
 
@@ -51,6 +53,20 @@ export const addCartItemAsync = createAsyncThunk<CartItem ,{ fdId: string; accou
     }
   );
 
+  export const DeletCart = createAsyncThunk<any, string>(
+    "cart/deletCart", 
+    async (id, thunkAPI) => {
+    try {
+        const result = await agent.Cart.DeleteCart(id);
+        return result;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue({ error: error.data })
+    }
+  });
+
+
+
+
 //   export const updateCartAsync = createAsyncThunk<CartItem, any>(
 //     "cart/updateCartAsync",
 //     async ({ data, amountProduct, idAccount }, thunkAPI) => {
@@ -69,17 +85,28 @@ export const addCartItemAsync = createAsyncThunk<CartItem ,{ fdId: string; accou
 //     }
 //   );
 
+
+
+export const itemPlusCartAsyncV2 = createAsyncThunk<any, any>("cart/editProductAsync", async (value, thunkAPI) => {
+    try {
+        const results = await agent.Cart.ItemPlusCart(value);
+        return results;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue({ error: error.data })
+    }
+});
+
   export const itemPlusCartAsync = createAsyncThunk<CartItem, any>(
     "cart/itemPlusCartAsync",
-    async ({ data}, thunkAPI) => {
+    async (id, thunkAPI) => {
       try {
         // console.log(data)
         let formData = new FormData();
-        formData.append("id", data.id);
+        formData.append("id", id);
         // formData.append("AccountID", idAccount);
         // formData.append("ProductID", data.product.id);
         // formData.append("AmountProduct", amountProduct);
-        const { result } = await agent.Cart.ItemPlusCart(formData);
+        const result = await agent.Cart.ItemPlusCart(formData);
         return result;
       } catch (error: any) {
         return thunkAPI.rejectWithValue({ error: error.data });
@@ -89,11 +116,11 @@ export const addCartItemAsync = createAsyncThunk<CartItem ,{ fdId: string; accou
 
   export const itemRemoveCartAsync = createAsyncThunk<CartItem, any>(
     "cart/itemRemoveCartAsync",
-    async ({ data}, thunkAPI) => {
+    async ({ id}, thunkAPI) => {
       try {
         // console.log(data)
         let formData = new FormData();
-        formData.append("id", data.id);
+        formData.append("id", id);
         // formData.append("AccountID", idAccount);
         // formData.append("ProductID", data.product.id);
         // formData.append("AmountProduct", amountProduct);
@@ -128,9 +155,9 @@ export const cratSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
         // if(action.payload.message === 'success')
-          
           state.carts = action.payload;
-          state.status = "idle";
+          // state.status = "idle";
+          state.CartdetailLoaded = true
         });
 
         // builder.addCase(fetchCartAsync.fulfilled, (state, action) => {

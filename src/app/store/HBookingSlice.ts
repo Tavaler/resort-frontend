@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import agent from "../API/Agent";
+// import { Descriptions } from "antd";
+import agent from "../api/agent";
 // import { CartItem } from "../models/cartItem";
-import { HouseBooking } from "../models/houseBooking";
+import { AddHouseBooking, HouseBooking } from "../models/houseBooking";
 
 interface HouseBookingState{
     hbookings: HouseBooking[] | null,
     status : string;
-
+    HbdetailLoaded : boolean;
 
     // detailCart : CartItem | null;
     // CartdetailLoaded : boolean;
@@ -15,12 +16,9 @@ interface HouseBookingState{
 }
 
 const initialState : HouseBookingState= {
-    hbookings: null,
+  hbookings: null,
   status: '',
-
-
-  // detailCart: null,
-  // CartdetailLoaded: false
+  HbdetailLoaded: false
 }
 
 export const fetchHouseBookingAsync = createAsyncThunk<any, any>(
@@ -36,22 +34,35 @@ export const fetchHouseBookingAsync = createAsyncThunk<any, any>(
   );
 
 
-export const addHouseBookingAsync = createAsyncThunk<HouseBooking ,{ accommodationId: string; accountId: string; checkIn: string;checkOut :string }>(
+export const addHouseBookingAsync = createAsyncThunk<any, AddHouseBooking >(
     "houseBooking/addHouseBookingAsync",
-  async ({ accommodationId, accountId, checkIn,checkOut }, thunkAPI) => {
+  async (value,thunkAPI) => {
       try {
         let formData = new FormData();
-        formData.append("AccountId", accountId);
-        formData.append("AccommodationId", accommodationId);
-        formData.append("CheckIn", checkIn.toString());
-        formData.append("CheckOut", checkOut.toString());
-        const { result } = await agent.HouseBooking.AddBooking(formData);
+        formData.append("AccountId", value.accountId);
+        formData.append("AccommodationId", value.accommodationId);
+        formData.append("CheckIn", value.checkIn.toString());
+        formData.append("CheckOut", value.checkOut.toString());
+        formData.append("DesiredDetail", value.desiredDetail);
+        const  result  = await agent.HouseBooking.AddBooking(formData);
         return result;
       } catch (error: any) {
         return thunkAPI.rejectWithValue({ error: error.data });
       }
     }
   );
+
+  export const Delet = createAsyncThunk<any, string>(
+    "houseBooking/delet", 
+    async (id, thunkAPI) => {
+    try {
+        const result = await agent.HouseBooking.DeleteBooking(id);
+        return result;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue({ error: error.data })
+    }
+  });
+
 
 //   export const updateCartAsync = createAsyncThunk<CartItem, any>(
 //     "cart/updateCartAsync",
@@ -98,6 +109,7 @@ export const hbookingSlice = createSlice({
           
           state.hbookings = action.payload;
           state.status = "idle";
+          state.HbdetailLoaded = true
         });
 
         // builder.addCase(fetchCartAsync.fulfilled, (state, action) => {

@@ -3,6 +3,19 @@ export interface Login {
     password: string;
 }
 
+export interface Account {
+    accountId:  string;
+    firstName:  string;
+    lastName:   string;
+    email:      string;
+    password:   string;
+    tel:        string;
+    isUsed:     number;
+    createTime: Date;
+    roleId:     string;
+    role:       Role;
+}
+
 export interface Register {
     accountId:  string;
     firstName:  string;

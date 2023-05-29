@@ -1,8 +1,7 @@
-import { HomeOutlined, UserOutlined } from '@ant-design/icons'
-import { Layout, Menu } from 'antd'
-import { Content } from 'antd/es/layout/layout'
-import Sider from 'antd/es/layout/Sider'
-import React from 'react'
+// import { HomeOutlined, UserOutlined } from '@ant-design/icons'
+// import { Layout, Menu } from 'antd'
+// import { Content } from 'antd/es/layout/layout'
+// import Sider from 'antd/es/layout/Sider'
 
 function Homepage() {
   return (

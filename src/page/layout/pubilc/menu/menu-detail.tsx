@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "react-medium-image-zoom/dist/styles.css";
-import Zoom from "react-medium-image-zoom";
 import Navbar from "../../../../components/Navbar";
 import { Link, useParams } from "react-router-dom";
 import {
@@ -9,11 +8,12 @@ import {
 } from "../../../../app/store/configureStore";
 import { GetByIdFd, resetDetailFd } from "../../../../app/store/menuSlice";
 import Swal from "sweetalert2";
-import { addCartItemAsync } from "../../../../app/store/cartSlice";
-import Test from "../../test/test";
+// import { addCartItemAsync } from "../../../../app/store/cartSlice";
 import "../../test/cssTest.css";
 
 import "../../../../index.css"
+import { Carousel } from "antd";
+import { URLSever } from "../../../../util/util";
 
 function MenuDetail() {
   const { account } = useAppSelector((state) => state.account);
@@ -21,9 +21,18 @@ function MenuDetail() {
 
   const [amount, setAmount] = useState<Number | any>(1); // จำนวนสินค้าที่เราจะเพิ่มใส่ตะกร้า
 
+  const onChange = () => {};
+
+  // const imagesdetail = detailfd?.fdImgs.map((image: any) => {
+  //   return (
+  //     <div >
+  //       <img style={contentStyle} src={image.image} />
+  //     </div>
+  //   );
+  // });
   const { id } = useParams<{ id: any }>();
   const dispatch = useAppDispatch();
-  const { productsdetailLoaded, detailfd } = useAppSelector(
+  const { detailfd } = useAppSelector(
     (state) => state.menu
   );
 
@@ -32,6 +41,7 @@ function MenuDetail() {
   const item = carts?.find((i) => i.fdId);
 
   const AddCart = async (accountId: any, fdId: any, amount: any) => {
+    console.log(`account: ${accountId} fdId: ${fdId} amount: ${amount}`)
     if (account) {
       Swal.fire({
         position: "center",
@@ -41,13 +51,6 @@ function MenuDetail() {
         timer: 1000,
       })
         .then(() => {
-          const result: any = dispatch(
-            addCartItemAsync({
-              accountId: accountId,
-              fdId: fdId,
-              amount: amount,
-            })
-          );
         })
         .then(() => {
           window.location.replace(`/menudetail/${id}`);
@@ -62,6 +65,48 @@ function MenuDetail() {
       });
   };
 
+    // from https://react-slick.neostack.com/docs/example/custom-arrows
+    const SampleNextArrow = (props: { className: any; style: any; onClick: any; }) => {
+      const { className, style, onClick } = props
+      return (
+        <div
+          className={className}
+          style={{
+            ...style,
+            color: 'black',
+            fontSize: '20px',
+            // lineHeight: '1.5715'
+          }}
+          onClick={onClick}
+        >
+          {/* <RightOutlined /> */}
+        </div>
+      )
+    }
+    
+    const SamplePrevArrow = (props: { className: any; style: any; onClick: any; }) => {
+      const { className, style, onClick } = props
+      return (
+        <div
+          className={className}
+          style={{
+            ...style,
+            color: 'black',
+            fontSize: '20px',
+            // lineHeight: '1.5715'
+          }}
+          onClick={onClick}
+        >
+          {/* <LeftOutlined /> */}
+        </div>
+      )
+    }
+  
+    const settings = {
+      nextArrow: <SampleNextArrow className={undefined} style={undefined} onClick={undefined} />,
+      prevArrow: <SamplePrevArrow className={undefined} style={undefined} onClick={undefined} />
+    }
+
   useEffect(() => {
     if (item) setAmount(1);
     if (!detailfd) dispatch(GetByIdFd(id));
@@ -72,40 +117,40 @@ function MenuDetail() {
 
   
   return (
-<>
-<Navbar />
+    <>
+      <Navbar />
 
-<div style={{backgroundColor:"#fff"}} className="container">
+      <div style={{ backgroundColor: "#fff" }} className="container">
+        {/* <!-- Breadcrumb Section Begin --> */}
+        <div className="breadcrumb-section">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="breadcrumb-text">
+                  <h2>รายละเอียด</h2>
+                  <div className="bt-option">
+                    <Link to="/">หน้าหลัก</Link>
+                    <span>{detailfd?.fdCategory.name}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <!-- Breadcrumb Section End --> */}
 
-     {/* <!-- Breadcrumb Section Begin --> */}
-     <div  className="breadcrumb-section">
-   <div className="container">
-     <div className="row">
-       <div className="col-lg-12">
-         <div className="breadcrumb-text">
-           <h2>รายละเอียด</h2>
-           <div className="bt-option">
-             <Link to="/">หน้าหลัก</Link>
-             <span>{detailfd?.fdCategory.name}</span>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
- {/* <!-- Breadcrumb Section End --> */}
-
- {/* <!-- Room Details Section Begin --> */}
- <section className="room-details-section spad">
-   <div className="container">
-     <div className="row">
-       <div className="col-lg-12">
-         <div className="room-details-item">
-           {/* <img src="img/room/room-details.jpg" alt="ss" /> */}
-           <center>
+        {/* <!-- Room Details Section Begin --> */}
+        <section className="room-details-section spad">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="room-details-item">
+                  {/* <img src="img/room/room-details.jpg" alt="ss" /> */}
+                  {/* <center>
            {
            detailfd?.fdImgs[0] ? <img
-            style={{height:"40%",width:"40%"}}
+            style={{maxHeight:"50rem",maxWidth:"40%"}}
+            className="img-fluid"
              src={
                "https://localhost:5000/images/" +
                detailfd?.fdImgs[0].fdImgName
@@ -116,19 +161,68 @@ function MenuDetail() {
              }
            />
 
-           : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ height: "20rem" }} alt="" />
+           : <img src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" className="img-fluid" alt="" />
           }
 
            
-           </center>
-           
-          
+           </center> */}
 
-           <div className="rd-text">
-             <div className="rd-title">
-               <h3>{detailfd?.fdName}</h3>
-               <div className="rdt-right">
-                 {/* <div className="rating">
+<div style={{backgroundColor:"#FAF9F6"}} className="services-section">
+
+<Carousel arrows {...settings} afterChange={onChange} autoplay>
+
+                      {/* <center>
+                        <img
+                          style={contentStyle}
+                          src={"https://localhost:5000/images/" + img.fdImgName}
+
+                        />
+                      </center> */}
+                      {detailfd?.fdImgs.map((img) => {
+                    return (
+                      <center>
+                        <img
+                          // className="img-fluid"
+                          style={{ height: "25rem", width: "30rem" }}
+                          src={URLSever + img.fdImgName}
+                          alt={URLSever + img.fdImgName}
+                        />
+                      </center>
+                    );
+                  })}
+                      
+                    </Carousel>
+      
+
+
+
+      {/* <Carousel autoplay>
+
+        <center>
+        {detailfd?.fdImgs.map((img) => {
+                    return (
+                      <center>
+                        <img
+                          // className="img-fluid"
+                          style={{ height: "25rem", width: "30rem" }}
+                          src={"https://localhost:5000/images/" + img.fdImgName}
+                          alt={"https://localhost:5000/images/" + img.fdImgName}
+                        />
+                      </center>
+                    );
+                  })}
+
+        </center>
+      </Carousel> */}
+    </div>
+
+
+
+                  <div className="rd-text">
+                    <div className="rd-title">
+                      <h3>{detailfd?.fdName}</h3>
+                      <div className="rdt-right">
+                        {/* <div className="rating">
                  <i className="icon_star"></i>
                  <i className="icon_star"></i>
                  <i className="icon_star"></i>
@@ -136,42 +230,43 @@ function MenuDetail() {
                  <i className="icon_star-half_alt"></i>
                </div> */}
 
-                 <a
-                   // href="#"
-                   onClick={() =>
-                     AddCart(account?.accountId, detailfd?.fdId, amount)
-                   }
-                 >
-                   เลือก
-                 </a>
-               </div>
-             </div>
-             <h2>
-               {detailfd?.fdPrice}฿<span></span>
-             </h2>
-             <table>
-               <tbody>
-                 <tr>
-                   <td className="r-o">Size:</td>
-                   <td> ft</td>
-                 </tr>
-                 <tr>
-                   <td className="r-o">ประเภท:</td>
-                   <td>{detailfd?.fdCategory.name}</td>
-                 </tr>
-                 {/* <tr>
+                        <a
+                          type="button"
+                          // href="#"
+                          onClick={() =>
+                            AddCart(account?.accountId, detailfd?.fdId, amount)
+                          }
+                        >
+                          เลือก
+                        </a>
+                      </div>
+                    </div>
+                    <h2>
+                      {detailfd?.fdPrice}฿<span></span>
+                    </h2>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td className="r-o">Size:</td>
+                          <td> ft</td>
+                        </tr>
+                        <tr>
+                          <td className="r-o">ประเภท:</td>
+                          <td>{detailfd?.fdCategory.name}</td>
+                        </tr>
+                        {/* <tr>
                    <td className="r-o">สถานะ:</td>
                    <td>King Beds</td>
                  </tr> */}
-                 <tr>
-                   <td className="r-o">รายละเอียด:</td>
-                   <td>{detailfd?.fdDescription}</td>
-                 </tr>
-               </tbody>
-             </table>
-             <p className="f-para">
-               {detailfd?.fdDescription}
-               {/* Motorhome or Trailer that is the question for you. Here are
+                        <tr>
+                          <td className="r-o">รายละเอียด:</td>
+                          <td>{detailfd?.fdDescription}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="f-para">
+                      {detailfd?.fdDescription}
+                      {/* Motorhome or Trailer that is the question for you. Here are
                some of the advantages and disadvantages of both, so you
                will be confident when purchasing an RV. When comparing Rvs,
                a motorhome or a travel trailer, should you buy a motorhome
@@ -181,19 +276,20 @@ function MenuDetail() {
                an achievement of a lifetime. It can be similar to
                sojourning with your residence as you search the various
                sites of our great land, America. */}
-             </p>
-             <p >
-               The two commonly known recreational vehicle classes are the
-               motorized and towable. Towable rvs are the travel trailers
-               and the fifth wheel. The rv travel trailer or fifth wheel
-               has the attraction of getting towed by a pickup or a car,
-               thus giving the adaptability of possessing transportation
-               for you when you are parked at your campsite.
-             </p>
-           </div>
-         </div>
+                    </p>
+                    <p>
+                      The two commonly known recreational vehicle classes are
+                      the motorized and towable. Towable rvs are the travel
+                      trailers and the fifth wheel. The rv travel trailer or
+                      fifth wheel has the attraction of getting towed by a
+                      pickup or a car, thus giving the adaptability of
+                      possessing transportation for you when you are parked at
+                      your campsite.
+                    </p>
+                  </div>
+                </div>
 
-         {/* <div className="rd-reviews">
+                {/* <div className="rd-reviews">
          <h4>Reviews</h4>
          <div className="review-item">
            <div className="ri-pic">
@@ -241,7 +337,7 @@ function MenuDetail() {
          </div>
        </div> */}
 
-         {/* <div className="review-add">
+                {/* <div className="review-add">
          <h4>Add Review</h4>
          <form action="#" className="ra-form">
            <div className="row">
@@ -268,24 +364,16 @@ function MenuDetail() {
            </div>
          </form>
        </div> */}
-       </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* <!-- Room Details Section End --> */}
+      </div>
+    </>
 
-
-
-
-     </div>
-   </div>
- </section>
- {/* <!-- Room Details Section End --> */}
-
-</div>
-
-</>
-
-
-    
     // <>
-    
+
     //     <Navbar />
     //     <div className="container">
     //     <Test />
@@ -566,10 +654,10 @@ function MenuDetail() {
     //       </div>
     //     </div>
     //     <div className="e1_7">
-        
+
     //       <a className="e1_12"
     //       type="button"
-                
+
     //                onClick={() =>
     //                  AddCart(account?.accountId, detailfd?.fdId, amount)
     //                }
@@ -618,7 +706,7 @@ function MenuDetail() {
     //           }
     //         />
     //       </div>
-          
+
     //       <div className="e1_18">
     //         <img
     //           src={
@@ -661,18 +749,17 @@ function MenuDetail() {
 
     //     </div>
     //     <div className="e1_41">
-          
 
     //       <span className="e1_43">ประเภท :  {detailfd?.fdCategory.name}</span>
     //     </div>
     //     <div className="e1_44">
     //       <span className="e1_45">รายละเอียด</span>
- 
+
     //       <div className="e1_47"></div>
     //       <span className="e1_48">
     //         {detailfd?.fdDescription}
     //       </span>
-        
+
     //     </div>
     //   </div>
 

@@ -1,10 +1,8 @@
-import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
-import agent from "../API/Agent";
-import { Login, Register } from "../models/user";
-import {Role} from "../models/role"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import { FdCategory } from "../models/menu";
 // import { CommunityGroup } from "../Model/CommunityGroup";
-import { setCart } from "./cartSlice";
+import agent from "../api/agent";
 
 interface Category{
     CategoryFd: FdCategory[] | null,

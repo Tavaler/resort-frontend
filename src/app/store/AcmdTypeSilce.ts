@@ -1,10 +1,7 @@
-import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
-import agent from "../API/Agent";
-import { Login, Register } from "../models/user";
-import {Role} from "../models/role"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import agent from "../api/agent";
 import { AccommodationType } from "../models/accommodation";
 // import { CommunityGroup } from "../Model/CommunityGroup";
-import { setCart } from "./cartSlice";
 
 interface AcmdType{
     AcmdType: AccommodationType[] | null,

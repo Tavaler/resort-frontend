@@ -1,4 +1,3 @@
-import React from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../app/store/configureStore";
@@ -15,6 +14,7 @@ function Login() {
   const navigate = useNavigate();
   const submitForm = async (data: any) => {
     const result = await dispatch(loginAccount(data)).unwrap();
+    
     console.log(result.data)
     if (result.msg === "OK") {
       swal({
@@ -24,7 +24,8 @@ function Login() {
       }).then(() => navigate("/home"));
     } else {
       swal({
-        title: result.message,
+        // title: result.message,
+        title:"ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
         icon: "warning",
         buttons: [false, "ตกลง"],
       });
@@ -51,8 +52,7 @@ function Login() {
           touched,
           handleChange,
           handleBlur,
-          handleSubmit,
-          isSubmitting,
+          handleSubmit
         }) => (
           <Form onSubmit={handleSubmit} style={{ backgroundColor: "" }}>
             <h3 className="mb-3">เข้าสู่ระบบ</h3>

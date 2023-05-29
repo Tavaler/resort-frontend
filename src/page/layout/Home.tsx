@@ -1,93 +1,81 @@
-import React from "react";
+import { useEffect } from "react";
 import Navbar from "../../components/Navbar";
-// import '../../assets/img/hero'
+import './home.css'
+import { Carousel } from 'antd';
+import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
+import { fetchCartAsync } from "../../app/store/cartSlice";
+import Footer from "../../components/Footer";
+
+// import Carousel from 'react-bootstrap/Carousel';
 
 function Home() {
+  const { account } = useAppSelector(state => state.account);
+  const dispatch = useAppDispatch();
+  // dispatch(fetchCartAsync(account?.accountId));
+
+  useEffect(() => {
+    //  if (!carts) 
+    dispatch(fetchCartAsync(account?.accountId));
+    
+    
+    //  dispatch(itemPlusCartAsync(carts.))
+    
+    //  console.log({account})
+    }, [dispatch,account]);
+
+    
+
+  
+
+
   return (
-
-
-
-
-
-
-
     <div>
+      {/* <NavbarV2 /> */}
       <Navbar />
+      {/* <Header /> */}
+      <div className="services-section">
+      
 
-      {/* <!-- Hero Section Begin --> */}
-      <section className="hero-section">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="hero-text">
-                <h1>Sona A Luxury Hotel</h1>
-                <p>
-                  Here are the best hotel booking sites, including
-                  recommendations for international travel and for finding
-                  low-priced hotel rooms.
-                </p>
-                <a href="#" className="primary-btn">
-                  Discover Now
-                </a>
-              </div>
-            </div>
 
-            {/* ----------------------------------------------------------------------------- */}
 
-            <div className="col-xl-4 col-lg-5 offset-xl-2 offset-lg-1">
-              <div className="booking-form">
-                <h3>Booking Your Hotel</h3>
-                <form action="#">
-                  <div className="check-date">
-                    <label htmlFor="date-in">Check In:</label>
-                    <input type="text" className="date-input" id="date-in" />
-                    <i className="icon_calendar"></i>
-                  </div>
-                  <div className="check-date">
-                    <label htmlFor="date-out">Check Out:</label>
-                    <input type="text" className="date-input" id="date-out" />
-                    <i className="icon_calendar"></i>
-                  </div>
-                  <div className="select-option">
-                    <label htmlFor="guest">Guests:</label>
-                    <select id="guest">
-                      <option value="">2 Adults</option>
-                      <option value="">3 Adults</option>
-                    </select>
-                  </div>
-                  <div className="select-option">
-                    <label htmlFor="room">Room:</label>
-                    <select id="room">
-                      <option value="">1 Room</option>
-                      <option value="">2 Room</option>
-                    </select>
-                  </div>
-                  <button type="submit">Check Availability</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hero-slider owl-carousel">
-          <div className="hs-item set-bg">
+        <Carousel autoplay>
+          <center>
             <img
+              className="responsive-home-image"
               src="https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/8b24efe3.jpg?impolicy=resizecrop&rw=1200&ra=fit"
               alt=""
             />
-          </div>
-          <div className="hs-item set-bg" data-setbg="img/hero/hero-2.jpg">
-            <img src="https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/8b24efe3.jpg?impolicy=resizecrop&rw=1200&ra=fit" />
-          </div>
-          <div className="hs-item set-bg" data-setbg="img/hero/hero-3.jpg">
+          </center>
+          <center>
             <img
-              src="https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/8b24efe3.jpg?impolicy=resizecrop&rw=1200&ra=fit"
+              className="responsive-home-image"
+              src="
+              https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/ea68a5a7.jpg?impolicy=resizecrop&rw=1200&ra=fit
+              "
               alt=""
             />
-          </div>
-        </div>
-      </section>
-      {/* <!-- Hero Section End --> */}
+          </center>
+
+          <center>
+            <img
+              className="responsive-home-image"
+              src="
+              https://s359.kapook.com/pagebuilder/d24d175e-45e3-4b12-9e22-666c44043686.jpg
+              "
+              alt=""
+            />
+          </center>
+          <center>
+            <img
+              className="responsive-home-image"
+              src="
+              https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/e43b53f0.jpg?impolicy=resizecrop&rw=1200&ra=fit
+              "
+              alt=""
+            />
+          </center>
+        </Carousel>
+      </div>
 
       {/* <!-- About Us Section Begin --> */}
       <section className="aboutus-section spad">
@@ -122,10 +110,10 @@ function Home() {
               <div className="about-pic">
                 <div className="row">
                   <div className="col-sm-6">
-                    <img src="img/about/about-1.jpg" alt="" />
+                    <img src="https://media-cdn.tripadvisor.com/media/photo-m/1280/1a/b3/15/13/photo7jpg.jpg" alt="" />
                   </div>
                   <div className="col-sm-6">
-                    <img src="img/about/about-2.jpg" alt="" />
+                    <img src="https://pix10.agoda.net/hotelImages/1730437/-1/e08df229e8584956623a269aabe29973.jpg?ca=7&ce=1&s=414x232" alt="" />
                   </div>
                 </div>
               </div>
@@ -145,6 +133,7 @@ function Home() {
                 <h2>Discover Our Services</h2>
               </div>
             </div>
+            
           </div>
           <div className="row">
             <div className="col-lg-4 col-sm-6">
@@ -192,8 +181,9 @@ function Home() {
                 <i className="flaticon-044-clock-1"></i>
                 <h4>Hire Driver</h4>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna.
+                บริการเช็คอิน 24 ชั่วโมง
+                  {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna. */}
                 </p>
               </div>
             </div>
@@ -222,6 +212,7 @@ function Home() {
                   className="hp-room-item set-bg"
                   data-setbg="img/room/room-b1.jpg"
                 >
+                  <img className="hp-room-item set-bg img-blur-home-event" src="https://s359.kapook.com/pagebuilder/3ee4b0d2-3070-4ec5-b830-da8ae2a8e570.jpg" alt="" />
                   <div className="hr-text">
                     <h3>Double Room</h3>
                     <h2>
@@ -255,11 +246,12 @@ function Home() {
               </div>
               <div className="col-lg-3 col-md-6">
                 <div
-                  className="hp-room-item set-bg"
-                  data-setbg="img/room/room-b2.jpg"
+                  className="hp-room-item set-bg "
+                  data-setbg="https://nps.dnp.go.th/img/file-0157013001594096324.jpg"
                 >
+                  <img  className="hp-room-item set-bg img-blur-home-event" src="https://nps.dnp.go.th/img/file-0157013001594096324.jpg" alt="" />
                   <div className="hr-text">
-                    <h3>Premium King Room</h3>
+                    <h3>พื้นที่กางเต็นท์</h3>
                     <h2>
                       159$<span>/Pernight</span>
                     </h2>
@@ -292,8 +284,12 @@ function Home() {
               <div className="col-lg-3 col-md-6">
                 <div
                   className="hp-room-item set-bg"
-                  data-setbg="img/room/room-b3.jpg"
+                  data-setbg="
+                  https://images.trvl-media.com/lodging/20000000/19820000/19812400/19812313/8b24efe3.jpg?impolicy=resizecrop&rw=1200&ra=fit
+                  "
+                  // data-setbg="src/assets/img/room/room-b3.jpg"
                 >
+                  <img className="hp-room-item set-bg img-blur-home-event" src="https://www.77kaoded.com/wp-content/uploads/2017/12/24312795_378902622566382_2541218222243337743_n-1024x683.jpg" alt="" />
                   <div className="hr-text">
                     <h3>Deluxe Room</h3>
                     <h2>
@@ -330,10 +326,11 @@ function Home() {
                   className="hp-room-item set-bg"
                   data-setbg="img/room/room-b4.jpg"
                 >
+                  <img className="hp-room-item set-bg img-blur-home-event" src="https://api.soimilk.com/sites/default/files/u31105/kempinspa_px4.jpg" alt="" />
                   <div className="hr-text">
-                    <h3>Family Room</h3>
+                    <h3>สปา</h3>
                     <h2>
-                      299$<span>/Pernight</span>
+                      299฿<span>/ครั้ง</span>
                     </h2>
                     <table>
                       <tbody>
@@ -368,7 +365,7 @@ function Home() {
       {/* <!-- Home Room Section End --> */}
 
       {/* <!-- Testimonial Section Begin --> */}
-      <section className="testimonial-section spad">
+      {/* <section className="testimonial-section spad">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -425,7 +422,7 @@ function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       {/* <!-- Testimonial Section End --> */}
 
       {/* <!-- Blog Section Begin --> */}
@@ -445,10 +442,11 @@ function Home() {
                 className="blog-item set-bg"
                 data-setbg="img/blog/blog-1.jpg"
               >
+                <img className="blog-item set-bg" src="https://resource.nationtv.tv/resource/photo_news/2014/12/28/1024_5c59dagieeh5ahidi8bi8.jpg?x-image-process=style/lg" alt="" />
                 <div className="bi-text">
                   <span className="b-tag">Travel Trip</span>
                   <h4>
-                    <a href="#">Tremblant In Canada</a>
+                    <a href="#">ถนนนั่งยองทองผาภูมิ</a>
                   </h4>
                   <div className="b-time">
                     <i className="icon_clock_alt"></i> 15th April, 2019
@@ -460,11 +458,13 @@ function Home() {
               <div
                 className="blog-item set-bg"
                 data-setbg="img/blog/blog-2.jpg"
+                
               >
+                <img className="blog-item set-bg" src="https://kanchanaburi.mots.go.th/ewtadmin/ewt/kanchanaburi/images/article/news658/n_20190729132752_658_6.jpg" alt="" />
                 <div className="bi-text">
                   <span className="b-tag">Camping</span>
                   <h4>
-                    <a href="#">Choosing A Static Caravan</a>
+                    <a href="#">วันผลไม้</a>
                   </h4>
                   <div className="b-time">
                     <i className="icon_clock_alt"></i> 15th April, 2019
@@ -511,6 +511,7 @@ function Home() {
                 className="blog-item small-size set-bg"
                 data-setbg="img/blog/blog-10.jpg"
               >
+                <img src="https://www.paiduaykan.com/travel/wp-content/uploads/2020/07/1-800x534.jpg" alt="" />
                 <div className="bi-text">
                   <span className="b-tag">Travel</span>
                   <h4>
@@ -528,103 +529,10 @@ function Home() {
       {/* <!-- Blog Section End --> */}
 
       {/* <!-- Footer Section Begin --> */}
-      <footer className="footer-section">
-        <div className="container">
-          <div className="footer-text">
-            <div className="row">
-              <div className="col-lg-4">
-                <div className="ft-about">
-                  <div className="logo">
-                    <a href="#">
-                      <img src="img/footer-logo.png" alt="" />
-                    </a>
-                  </div>
-                  <p>
-                    We inspire and reach millions of travelers
-                    <br /> across 90 local websites
-                  </p>
-                  <div className="fa-social">
-                    <a href="#">
-                      <i className="fa fa-facebook"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-tripadvisor"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-instagram"></i>
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-youtube-play"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-3 offset-lg-1">
-                <div className="ft-contact">
-                  <h6>Contact Us</h6>
-                  <ul>
-                    <li>(12) 345 67890</li>
-                    <li>info.colorlib@gmail.com</li>
-                    <li>856 Cordia Extension Apt. 356, Lake, United State</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-lg-3 offset-lg-1">
-                <div className="ft-newslatter">
-                  <h6>New latest</h6>
-                  <p>Get the latest updates and offers.</p>
-                  <form action="#" className="fn-form">
-                    <input type="text" placeholder="Email" />
-                    <button type="submit">
-                      <i className="fa fa-send"></i>
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="copyright-option">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-7">
-                <ul>
-                  <li>
-                    <a href="#">Contact</a>
-                  </li>
-                  <li>
-                    <a href="#">Terms of use</a>
-                  </li>
-                  <li>
-                    <a href="#">Privacy</a>
-                  </li>
-                  <li>
-                    <a href="#">Environmental Policy</a>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-lg-5">
-                <div className="co-text">
-                  <p>
-                    {/* <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> */}
-                    Copyright &copy;
-                    <script>document.write(new Date().getFullYear());</script>{" "}
-                    All rights reserved | This template is made with{" "}
-                    <i className="fa fa-heart" aria-hidden="true"></i> by{" "}
-                    <a href="https://colorlib.com" target="_blank">
-                      Colorlib
-                    </a>
-                    {/* <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> */}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+
+      <Footer />
+
+
       {/* <!-- Footer Section End --> */}
 
       {/* <!-- Search model Begin --> */}
@@ -642,7 +550,10 @@ function Home() {
           </form>
         </div>
       </div>
+
       {/* <!-- Search model end --> */}
+
+
     </div>
   );
 }

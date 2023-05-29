@@ -8,6 +8,11 @@ import { cratSlice } from './cartSlice';
 import { CategorySilce } from './FdCategorySilce';
 import { hbookingSlice } from './HBookingSlice';
 import { menuSlice } from './menuSlice';
+import { serveSlice } from './serveSlice';
+import { serveCartSlice } from './ServeCartSlice';
+import { hborderSlice } from './hbOrderSlice';
+import { orderSlice } from './orderSlice';
+import { serveorderSlice } from './serveOrderSlice';
 
 
 export const store = configureStore({
@@ -18,7 +23,12 @@ export const store = configureStore({
         cartItem : cratSlice.reducer,
         fdCategory : CategorySilce.reducer,
         housebooking : hbookingSlice.reducer,
-        acmdType : AcmdTypeSilce.reducer
+        acmdType : AcmdTypeSilce.reducer,
+        serve : serveSlice.reducer,
+        serveCart : serveCartSlice.reducer,
+        hbOrder: hborderSlice.reducer,
+        order: orderSlice.reducer,
+        serveOrder:serveorderSlice.reducer
     } ,
   });
 

@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "react-medium-image-zoom/dist/styles.css";
-import Zoom from "react-medium-image-zoom";
-import Navbar from "../../../../components/Navbar";
 import { Link, useParams } from "react-router-dom";
 import {
   useAppDispatch,
@@ -10,7 +8,6 @@ import {
 import { GetByIdFd, resetDetailFd } from "../../../../app/store/menuSlice";
 import Swal from "sweetalert2";
 import { addCartItemAsync } from "../../../../app/store/cartSlice";
-import Test from "../../test/test";
 import "../../test/cssTest.css";
 
 function MenuDetailV2() {
@@ -21,7 +18,7 @@ function MenuDetailV2() {
 
   const { id } = useParams<{ id: any }>();
   const dispatch = useAppDispatch();
-  const { productsdetailLoaded, detailfd } = useAppSelector(
+  const {  detailfd } = useAppSelector(
     (state) => state.menu
   );
 
@@ -46,6 +43,7 @@ function MenuDetailV2() {
               amount: amount,
             })
           );
+          console.log(result)
         })
         .then(() => {
           window.location.replace(`/menudetail/${id}`);

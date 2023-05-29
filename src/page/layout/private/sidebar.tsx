@@ -1,7 +1,6 @@
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import Sider from 'antd/es/layout/Sider'
-import React from 'react'
 
 function sidebar() {
   return (

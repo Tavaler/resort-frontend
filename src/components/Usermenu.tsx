@@ -1,6 +1,6 @@
-import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { BookOutlined, HomeOutlined, IdcardOutlined, LogoutOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Register } from "../app/models/user";
@@ -14,31 +14,20 @@ interface Prop {
 export const Usermenu = ({ account }: Prop) => {
   const dispatch = useAppDispatch();
 
+
+  // const { carts } = useCart();
+
   useEffect(() => {
     if (!account) dispatch(fetchAccount());
-  }, [account]);
-  console.log(account);
+  }, [account,dispatch]);
 
   const navigate = useNavigate();
 
   return (
     <div className="tn-right">
-      {/* <div className="top-social">
-        <a href="#">
-          <i className="fa fa-facebook"></i>
-        </a>
-        <a href="#">
-          <i className="fa fa-twitter"></i>
-        </a>
-        <a href="#">
-          <i className="fa fa-tripadvisor"></i>
-        </a>
-        <a href="#">
-          <i className="fa fa-instagram"></i>
-        </a>
-      </div> */}
-
-      {account != null ? (
+      {
+      account != null ? 
+      (
         <>
           <div className="header-configure-area">
             <div
@@ -48,7 +37,8 @@ export const Usermenu = ({ account }: Prop) => {
               &nbsp;
               <img
                 src="https://imgs.search.brave.com/Ell7mcCJkiKw_1nJ4Vr-9r8l0FPRS_ZzLi44ylxAqgk/rs:fit:980:980:1/g:ce/aHR0cDovL2Nkbi5v/bmxpbmV3ZWJmb250/cy5jb20vc3ZnL2lt/Z18zODMyMTAucG5n"
-                alt=""
+                // src="https://drive.google.com/file/d/17-tmBBJt-oGB5HNtKRfWOGAwPhkQU9Ek/view?usp=sharing"
+                alt="icon-user"
               />
               {/* <UserOutlined /> */}
               <span>
@@ -59,7 +49,7 @@ export const Usermenu = ({ account }: Prop) => {
                 <ul className="dropdown">
                   <li>
                     {/* <a href="#">Zi</a> */}
-                    <Link
+                    <Link style={{color:"red"}}
                       to={"#"}
                       // className="bk-btn"
                       onClick={() =>
@@ -82,24 +72,33 @@ export const Usermenu = ({ account }: Prop) => {
                         })
                       }
                     >
-                      ออกจากระบบ
+                      <LogoutOutlined style={{color:"red"}} />Logout
                     </Link>
                   </li>
 
-                  {account.roleId != "1" ? (
+                  {/* <li>
+                        <Link to={"/acmdBooking"}>การจองที่พัก</Link>
+                      </li>
+                      <li>
+                        <Link to={"/servebooking"}>การขอบริการ</Link>
+                      </li>
+                      <li>
+                        <Link to={"/orderbooking"}>การจอง</Link>
+                      </li> */}
+                      <li>
+                        {/* <Link to={"/profile"}>ข้อมูลทั้งหมด</Link> */}
+                        <a style={{color:"#0150EA"}} onClick={() => navigate("/profile", { state: account })}><IdcardOutlined style={{color:"#0150EA"}} />ข้อมูลทั้งหมด</a>
+
+                        
+                      </li>
+                  {account.role.roleName != "User" ? (
                     <>
+
                       <li>
-                        <Link to={"/createmenu"}>Create Menu</Link>
-                      </li>
-                      <li>
-                        <Link to={"/fdList"}>fdList</Link>
-                      </li>
-                      <li>
-                        <Link to={"/acmdList"}>acmdList</Link>
+                        <Link to={"/userList"}><img src="https://cdn.onlinewebfonts.com/svg/img_325788.png" />Admin</Link>
                       </li>
                     </>
                   ) : (
-                    
                     <></>
                   )}
 
@@ -107,14 +106,61 @@ export const Usermenu = ({ account }: Prop) => {
                 </ul>
               </div>
             </div>
-            {"  "}
+            &nbsp;
             <Button
-              type="default"
+              //type="default"
               icon={<ShoppingCartOutlined />}
+              type="primary" 
+
+              // onClick={() => setModal2Open(true)}
               // loading={loadings[2]}
               onClick={() => navigate("/cart")}
-              // color="#fff"
-            ></Button>
+              // color="#00EB5C"
+            >
+              {/* {carts?.length} */}
+            </Button>
+            {/* &nbsp; */}
+            <Button
+              type="primary"
+              icon={<HomeOutlined   />}
+              style={{color:"#fff",backgroundColor:"#00EB5C"}}
+              
+              // type="danger" 
+              // onClick={() => setModal2Open(true)}
+              // loading={loadings[2]}
+              onClick={() => navigate("/acmdBooking")}
+              color="green"
+            >
+              {/* {carts?.length} */}
+            </Button>
+            <Button
+              type="default"
+              icon={<BookOutlined  />}
+              style={{color:"#fff",backgroundColor:"#EBB900"}}
+              // type="danger" 
+              // onClick={() => setModal2Open(true)}
+              // loading={loadings[2]}
+              onClick={() => navigate("/servebooking")}
+              // color="#00FF0D"
+            >
+              {/* {carts?.length} */}
+            </Button>
+
+
+            {/* <Modal
+            centered
+            style={{width:"auto"}}
+
+            open={modal2Open}
+            onOk={() => setModal2Open(false)}
+            onCancel={() => setModal2Open(false)}
+            >
+              <CartV2 />
+              
+
+            </Modal> */}
+
+           
           </div>
         </>
       ) : (
@@ -179,7 +225,12 @@ export const Usermenu = ({ account }: Prop) => {
                         </ul>
                       </div>
                     </div> */}
+                    
     </div>
+
+
+
+
   );
 };
 
