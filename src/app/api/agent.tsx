@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 // axios.defaults.baseURL = "http://10.103.0.16/cs63/s15/resort/backend2/";
 // http://10.103.0.16/cs63/s15/resort/backend2/swagger/index.html
+
+
 axios.defaults.baseURL = "http://10.103.0.16/cs63/s15/resort/backend2/"
 
 // axios.defaults.baseURL = "https://localhost:5000/";
@@ -177,6 +179,7 @@ const Order = {
     getAll: () => requests.get('Orders/GetOrders'),
     GetById: (id: any) => requests.get(`Orders/GetById/${id}`) ,
     // /HBOrder/GetByAccountId/dd?pageSize=6
+    update: (value: any) => requests.put("Orders/PaymentOrder",createFormData(value) ),
     GetByIdAccount: (id: any) => requests.get(`Orders/GetByAccountId/${id}`) ,
     // getConfirm: () => requests.get('OrderAccount/GetConfirmOrder' ),
     create:(value: any) =>requests.post('Orders/CreateOrder', value),
@@ -192,11 +195,7 @@ const AccommodationType = {
     // GetByIdAcmd: (id: any) => requests.get(`Accommodation/${id}`) ,
 }
 
-// const Order = {
-//     getAll: () => requests.get('AccommodationType/'),
-//     create:(value: any) =>requests.post('Orders/CreateOrder', value),
-//     // GetByIdAcmd: (id: any) => requests.get(`Accommodation/${id}`) ,
-// }
+
 
 const ServeOrder = {
     getAll: () => requests.get('ServeOrder/GetOrders'),
@@ -207,6 +206,19 @@ const ServeOrder = {
     putconfirm:(value:any) => requests.put("ServeOrder/ConfirmStatusOrder", createFormData(value)),
     cancelStatusOrder:(value:any) => requests.put("ServeOrder/CancelStatusOrder", createFormData(value)),
     SuccessStatusOrder:(value:any) => requests.put("ServeOrder/SuccessStatusOrder", createFormData(value)),
+}
+
+const Report = {
+    getProductStatistics: () => requests.get("Report/GetProductStatistics"),
+    getSalesStatistics: () => requests.get("Report/GetSalesStatistics"),
+
+    getAccmdStatistics: () => requests.get("Report/GetAccmdStatistics"),
+    getAccmdSalesStatistics: () => requests.get("Report/GetAccmdSalesStatistics"),
+
+    getServeStatistics: () => requests.get("Report/GetServeStatistics"),
+    getServeSalesStatistics: () => requests.get("Report/GetServeSalesStatistics"),
+
+    
 }
 
 const agent = {
@@ -224,7 +236,8 @@ const agent = {
     ServeCart,
     HBOrder,
     Order,
-    ServeOrder
+    ServeOrder,
+    Report
     
     // ServeOrder,
 

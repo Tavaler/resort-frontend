@@ -1,6 +1,6 @@
-// import React from 'react'
-import LayoutAdmin from './LayoutAdmin'
-import { Card, Col, Row, Avatar, Space, Dropdown, MenuProps } from 'antd';
+import { Card, Col, Row, Avatar, Space, Dropdown, MenuProps, Button, 
+    // DatePickerProps
+ } from 'antd';
 import { useState } from "react";
 // import { currencyFormat, Ts } from '../../app/util/util';
 // import LayoutPrivate from './LayoutPrivate';
@@ -8,70 +8,123 @@ import ReactFC from "react-fusioncharts";
 import FusionCharts from "fusioncharts";
 import Charts from "fusioncharts/fusioncharts.charts";
 import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
-
-// import { useAppDispatch } from '../../../../app/store/configureStore';
-import { Ts } from '../../../../app/util/util';
+import { Ts } from '../../../../util/util';
 import Doughnut3D from '../Charts/Doughnut3D';
 import Column3D from '../Charts/Column3D';
 // import SidebarAdmin from '../Sidebar/SidebarAdmin';
-
-
-// import useReport from '../../hook/useReport';
+// import useReport from '../../hooks/useReport';
 import useProduct from '../../../../app/hook/useProduct';
 import useUser from '../../../../app/hook/useUser';
+// import * as XLSX from 'xlsx';
+import { FileExcelOutlined ,PrinterOutlined,FilePdfOutlined} from '@ant-design/icons';
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+// import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFReport from '../PDF/PDFReport ';
+// import { Community, ProductStatistics } from '../../../Model/Report';
+import { GetProductStatistics } from "../../../../app/models/report";
+
+// import Chart2 from '../Charts/Column2D';
+import LayoutAdmin from './LayoutAdmin';
+import useReport from '../../../../app/hook/useReport';
+// import agent from '../../../../app/api/agent';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 ReactFC.fcRoot(FusionCharts, Charts ,FusionTheme);
 
-const chartData = [
-    {
-        label: "Venezuela",
-        value: "290",
-        color: "#CB4335"
-    },
-    {
-        label: "Saudi",
-        value: "260",
-        color: "#633974"
-    },
-    {
-        label: "Canada",
-        value: "180",
-        color: "#2471A3"
-    },
-    {
-        label: "Iran",
-        value: "140",
-        color: "#229954"
-    },
-    {
-        label: "Russia",
-        value: "115",
-        color: "#F1C40F"
-    },
-    {
-        label: "UAE",
-        value: "100",
-        color: "#E67E22"
-    },
-    {
-        label: "US",
-        value: "30",
-        color: "#424949"
-    },
-    {
-        label: "China",
-        value: "30",
-        color: "#1B2631"
-    }
-];
-
 const Dashbord = () => {
-    // const dispatch = useAppDispatch();
-    // const {productStatistics ,salesStatistics}= useReport();
+    
+    const {productStatistics ,salesStatistics }= useReport();
     const {fds} = useProduct()
-    const {account,user}=useUser()
-    console.log("user",account)
+    const {user}=useUser()
+    // console.log("salesCommunity",salesCommunity)
     const [typeChart, setTypeChart] = useState<string>("doughnut3d");
+
+    const dataChartProductStatistics: TypeDataChart[] = productStatistics?.map(info => ({
+        label: info.product.fdName,
+        value: info.numPercen,
+    })) as TypeDataChart[];
+
+    interface TypeDataChart {
+        label: any;
+        value: any;
+        color: any;
+    }
+
+    //value: info.product.communityGroupID,
+
+    const dataMonth = [
+        {
+            key: 1,
+            label: "ม.ค.",
+            value: 0
+        },
+        {
+            key: 2,
+            label: "ก.พ.",
+            value: 0
+        },
+        {
+            key: 3,
+            label: "มี.ค.",
+            value: 0
+        },
+        {
+            key: 4,
+            label: "เม.ย.",
+            value: 0
+        },
+        {
+            key: 5,
+            label: "พ.ค.",
+            value: 0
+        },
+        {
+            key: 6,
+            label: "มิ.ย.",
+            value: 0
+        },
+        {
+            key: 7,
+            label: "ก.ค.",
+            value: 0
+        },
+        {
+            key: 8,
+            label: "ส.ค.",
+            value: 0
+        },
+        {
+            key: 9,
+            label: "ก.ย.",
+            value: 0
+        },
+        {
+            key: 10,
+            label: "ต.ค.",
+            value: 0
+        },
+        {
+            key: 11,
+            label: "พ.ย.",
+            value: 0
+        },
+        {
+            key: 12,
+            label: "ธ.ค.",
+            value: 0
+        }
+    ];
+
+    const data = dataMonth.map(data => {
+        const percent = salesStatistics?.sales.filter(e => e.month === data.key).reduce((curNumber, item) => {
+            return curNumber + item.percent;
+        }, 0);;
+        return {
+            label: data.label,
+            value: percent
+        }
+    });
 
     const items: MenuProps['items'] = [
         {
@@ -97,12 +150,53 @@ const Dashbord = () => {
         },
     ];
 
-    const DropdownChart01 = <Dropdown.Button style={{backgroundColor:"#82b1ff"}} menu={{ items }} >
+    const DropdownChart01 = <Dropdown.Button menu={{ items }} >
         <Ts>เลือก</Ts>
     </Dropdown.Button>;
 
+// const handleOnExport = () => {
+//     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+//     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+//     //const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataChartProductStatistics); 
+//     XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
+//     XLSX.writeFile(wb, "MyExcel.xlsx");
+//   };
+
+  const componentRef = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "emp0data",
+  });
+
+
+//   const tests = salesCommunity?.sales.map(data => {
+  
+//     return {
+//         label: data.percent,
+//         value: data.communityName
+//     }
+// });
+
+// const [infoReport, setInfoReport] = useState<Community | null>(null);
+// const loadReport = async (date : any = null) => {
+//     const { data } = await agent.Report.getReport(date);
+//     console.log("datasss",data)
+//     if (data)setInfoReport(data);
+//   };
+
+  
+//   const onChange: DatePickerProps['onChange'] = async (_, dateString) => {
+//     if(dateString)
+//     loadReport(Number(dateString));
+   
+//     else
+//     loadReport();
+//   };
+//   console.log("dateString",dateString)
     return (
          <LayoutAdmin>
+          
             <Space direction='vertical' size={"large"} style={{ display: "flex" }} >
                
 
@@ -137,22 +231,63 @@ const Dashbord = () => {
                                 </div>
                             </div>
                         </div>
+                        <Button onClick={handlePrint} className="mr-2"><PrinterOutlined style={{}}/>Print</Button>
+                        <Button 
+                        // onClick={handleOnExport}
+                         className="mr-2"><FileExcelOutlined />Excel</Button>
+                        <PDFDownloadLink
+        document={<PDFReport  report={productStatistics as unknown as GetProductStatistics[]} />}
+        fileName="รายงาน.pdf"
+        onClick={() =>
+        console.log(productStatistics)
+
+        }
+      >
+        <Button
+          className=" btn-sm btn-rounded"
+          style={{marginTop:"5px", marginLeft: "0.25%" }}
+          // danger
+        >
+          <FilePdfOutlined /> PDF
+        </Button>
+      </PDFDownloadLink>
                     </div>
               
-                <div>
-                    <Row gutter={16}>
-                        <Col className="gutter-row center" span={12}>
-                            <Card title="สถิติสินค้า" extra={DropdownChart01} className='text-st' bordered={false} style={{backgroundColor:"#82b1ff", width: "100%" }}>
-                                <Doughnut3D data={chartData} ReactFC={ReactFC} typeChart={typeChart} />
+                <div ref={componentRef}>
+                    <Row gutter={16} >
+                        <Col className="gutter-row center" span={12} >
+                            <Card title="สถิติสินค้า" extra={DropdownChart01} className='text-st' bordered={false} style={{ width: "100%" }}>
+                                <Doughnut3D data={dataChartProductStatistics} ReactFC={ReactFC} typeChart={typeChart} />
                             </Card>
                         </Col>
-
                         <Col className="gutter-row center" span={12}>
-                            <Card title="สถิติการขาย" className='text-st' bordered={false} style={{backgroundColor:"#82b1ff", width: "100%" }}>
-                                <Column3D data={chartData} ReactFC={ReactFC} />
+                            <Card title="สถิติการขาย" className='text-st' bordered={false} style={{ width: "100%" }}>
+                                <Column3D data={data} ReactFC={ReactFC} />
                             </Card>
                         </Col>
                     </Row>
+                    {/* <DatePicker placeholder="กำหนดปี"  onChange={onChange} picker="year" style={{ marginTop: "25px", marginRight: "25px" }} /> */}
+                    <Row gutter={16}>
+                        {/* <Col className="gutter-row center" span={12}>
+                            <Card title="สถิติสินค้า" extra={DropdownChart01} className='text-st' bordered={false} style={{ width: "100%" }}>
+                                <Doughnut3D data={dataChartProductStatistics} ReactFC={ReactFC} typeChart={typeChart} />
+                            </Card>
+                        </Col> */}
+                        
+                        {/* <Col className="gutter-row center" span={12}>
+                            <Card title="สถิติชุมชน" className='text-st' bordered={false} style={{ width: "100%" }}>
+
+                                <Chart2
+                    data={salesCommunity}
+                    ReactFC={ReactFC}
+                    toTalPrice={salesCommunity?.totalPrice}
+                    typeChart="bar3d"
+                  />
+                            </Card>
+                        </Col> */}
+                        
+                    </Row>
+                    
                 </div>
             </Space>
 

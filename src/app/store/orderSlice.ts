@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {  Order } from "../models/order";
+import {  Order, OrderID } from "../models/order";
 import agent from "../api/agent";
 
 interface ReviewState {
@@ -8,7 +8,7 @@ interface ReviewState {
   orderAllLoaded: boolean;
   
   orderLoaded: boolean;
-  orderDetail: Order[] | null
+  orderDetail: OrderID | null
   orderDetailLoaded: boolean;
 }
 
@@ -33,17 +33,17 @@ export const fetchOrderByIdAccount = createAsyncThunk<any, any>(
   }
 );
 
-// export const fetchOrderById = createAsyncThunk<any ,any>(
-//   "product/fetchOrderConfirm",
-//   async (id, thunkAPI) => {
-//     try {
-//       const result = await agent.Order.GetById(id);
-//       return result;
-//     } catch (error: any) {
-//       return thunkAPI.rejectWithValue({ error: error.data });
-//     }
-//   }
-// );
+export const fetchOrderById = createAsyncThunk<any ,any>(
+  "order/fetchOrderConfirm",
+  async (id, thunkAPI) => {
+    try {
+      const result = await agent.Order.GetById(id);
+      return result;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
+  }
+);
 
 export const GetOrderAll = createAsyncThunk<any>(
   'Order/GetAll',
@@ -80,11 +80,12 @@ export const orderSlice = createSlice({
       state.order = action.payload.data;
       state.orderLoaded = true;
     });
-    // builder.addCase(fetchOrderById.fulfilled, (state, action) => {
-    // state.orderDetail = action.payload.data;
-    //   state.orderDetailLoaded = true;
-    // });
+
+    builder.addCase(fetchOrderById.fulfilled, (state, action) => {
+    state.orderDetail = action.payload.data;
+      state.orderDetailLoaded = true;
+    });
   },
 });
 
-export const { resetOrder } = orderSlice.actions;
+export const { resetOrder ,resetOrderDetail} = orderSlice.actions;

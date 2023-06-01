@@ -7,6 +7,9 @@ export const Ts = ({ children , className } : any) => <div className={`text-st $
 
 export const URLSever = "http://10.103.0.16/cs63/s15/resort/backend2/images/";
 
+// export const URLSever = "https://localhost:5000/";
+
+
 export const URL = "http://10.103.0.16/cs63/s15/resort/backend2/"
 // axios.defaults.baseURL = "http://10.103.0.16/cs63/s15/resort/backend2/"
 

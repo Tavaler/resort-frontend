@@ -15,6 +15,8 @@
 export interface Order {
     id:                 string;
     status:             any;
+    delStatus:          any;
+    account:            any;
     payimage:           string;
     total:              number;
     createDate:         Date;
@@ -27,6 +29,29 @@ export interface Order {
     productAmountPrice: number;
     productImage:       string;
 }
+
+export interface OrderID {
+    id:         string;
+    status:     number;
+    payimage:   string;
+    total:      number;
+    createDate: Date;
+    orderItem:  OrderItemId[];
+}
+
+export interface OrderItemId {
+    id:             string;
+    amount:         number;
+    sumAmountPrice: number;
+    fdId:           string;
+    categoryName:   string;
+    productName:    string;
+    productPrice:   number;
+    productImage:   string;
+}
+
+
+
 
 export interface OrderCreate {
     accommodationId: string;

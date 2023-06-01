@@ -13,7 +13,7 @@ import Login from '../../page/Login';
 import Register from '../../page/Register';
 import { RoleInfo } from '../models/role';
 import Home from "../../page/layout/Home";
-import Homepage from "../../page/layout/private/Homepage";
+// import Homepage from "../../page/layout/private/Homepage";
 // import ProductList from '../../features/product/ProductList';
 // import HomePage from '../../features/home/HomePage';
 // import Login from '../../features/account/Login';
@@ -37,7 +37,10 @@ import Homepage from "../../page/layout/private/Homepage";
 
 export const mainRoutes = (
          <Routes>
+          
+           {/* <Route path="/" element={<Home />} /> */}
            <Route path="/" element={<Home />} />
+
            <Route
              path="/login"
              element={
@@ -63,7 +66,7 @@ export const mainRoutes = (
            <Route element={<PrivateRoute roles={[RoleInfo.Admin]} />}>
              {/* <Header /> */}
              {/* <Header /> */}
-             <Route path="/home" element={<Homepage />} />
+             {/* <Route path="/home" element={<Homepage />} /> */}
              <Route path="/createmenu" element={<CreateMenu />} />
           {/* <Route path="/editmenu" element={<EditMenu />} /> */}
 
@@ -76,8 +79,7 @@ export const mainRoutes = (
            <Route path="/menudetail/:id" element={<MenuDetail />} />
            {/* <Route path='/detail/:id' element={<Details />} /> */}
            
-           
-           <Route path="/privatehome" element={<Homepage />} />
+
 
            <Route path="/date" element={<Datepicker />} />
 

@@ -20,7 +20,9 @@ export const PrivateRoute = ({ roles }: Props) => {
     //ตรวจสอบว่าตรงกับ roles ["a","b","c"] ใดๆ ที่ส่งเข้ามาหรือไม่
     if (roles && !roles?.some((r) => account.role.roleName?.includes(r))) {
         // toast.error("Not authorized to access this area");
+        // return <Navigate to="" state={{ from: location }} replace />;
         return <Navigate to="/" state={{ from: location }} replace />;
+
     }
     return <Outlet />;
 }

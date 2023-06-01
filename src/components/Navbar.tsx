@@ -54,7 +54,9 @@ const Navbar = () => {
           <ul>
             <li className="">
               {/* <li className="active"> */}
+              {/* <Link to="/">Home</Link> */}
               <Link to="/">Home</Link>
+
             </li>
             <li>
               <Link to="/rooms">ที่พัก</Link>

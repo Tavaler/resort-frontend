@@ -1,6 +1,6 @@
 import { Button, Collapse, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { FileTextOutlined } from "@ant-design/icons";
+import { FileAddOutlined, FileTextOutlined } from "@ant-design/icons";
 import useHBorder from "../../../../app/hook/useHBorder";
 import {
   useAppDispatch,
@@ -17,33 +17,41 @@ import {
   fetchHBOrderById,
   resetDetailHB,
 } from "../../../../app/store/hbOrderSlice";
-
-// import "../orderAll/orderAllCss.css"
+import AddImgOrder from "./AddImgOrder";
+import AddImgServeOrder from "./AddImgServeOrder";
+import { fetchOrderById, resetOrderDetail } from "../../../../app/store/orderSlice";
 
 function orderAll() {
   const { Panel } = Collapse;
   const { hborder } = useHBorder();
   const { order } = useOrder();
-  const { serveorder,
-    //  sv
-     } = useServeorder();
-  // console.log(sv)
-  // const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
-  const { 
+  const {
     // hborderdetailLoaded,
-     hborderdetail } = useAppSelector(
-    (state) => state.hbOrder
-  );
+    orderDetail,
+  } = useAppSelector((state) => state.order);
+  
+  const {
+    serveorder,
+  } = useServeorder();
+  const dispatch = useAppDispatch();
+  
+  const {
+    // hborderdetailLoaded,
+    hborderdetail,
+  } = useAppSelector((state) => state.hbOrder);
 
-  // console.log("detailfd", hborderdetail);
-  // const [open, setOpen] = useState(false);
+
   const [openOrder, setOpenOrder] = useState(false);
   const [hboderId, setHBOrderId] = useState<string>("");
 
-  // const [openModalHB, setOpenModalHB] = useState<boolean>(false);
+  const [openOrder2, setOpenOrder2] = useState(false);
+  const [oderId, setOrderId] = useState<string>("");
 
+  // const [openOrder3, setOpenOrder3] = useState(false);
+  // const [serveoderId, setServeOrderId] = useState<string>("");
+
+/////hb
   useEffect(() => {
     dispatch(fetchHBOrderById(hboderId));
     return () => {
@@ -51,26 +59,530 @@ function orderAll() {
     };
   }, [hborderdetail, hboderId, dispatch]);
 
-  // const { account } = useAppSelector((state) => state.account);
+  ////order
+  useEffect(() => {
+    dispatch(fetchOrderById(oderId));
+    return () => {
+      dispatch(resetOrderDetail());
+    };
+  }, [orderDetail, oderId, dispatch]);
+
+  //////serve
+  useEffect(() => {
+    dispatch(fetchHBOrderById(hboderId));
+    return () => {
+      dispatch(resetDetailHB());
+    };
+  }, [hborderdetail, hboderId, dispatch]);
+
 
   const [id, setId] = useState<string>("");
+  const [id2, setId2] = useState<string>("");
+  const [id3, setId3] = useState<string>("");
+
 
   const onClickOpenPaymentForm = (id: any) => {
     setOpenModalTransferPayment(true);
     setId(id);
   };
+
+  const onClickOpenPaymentForm2 = (id2: any) => {
+    setOpenModalTransferPayment2(true);
+    setId2(id2);
+  };
+
+  // const onClickOpenPaymentForm3 = (id3: any) => {
+  //   setOpenModalTransferPayment3(true);
+  //   setId3(id3);
+  // };
   // console.log("hborder", hborder);
 
-  const [openModalTransferPayment, setOpenModalTransferPayment] = useState<
-    boolean
-  >(false);
+  const [openModalTransferPayment, setOpenModalTransferPayment] =
+    useState<boolean>(false);
+  
+  const [openModalTransferPayment2, setOpenModalTransferPayment2] =
+    useState<boolean>(false);
+
+  const [openModalTransferPayment3, setOpenModalTransferPayment3] =
+    useState<boolean>(false);
 
   // const ImgNoDtata = <a href="https://www.flaticon.com/free-icons/question" title="question icons">Question icons created by Freepik - Flaticon</a>
 
   const text = `
   ไม่มีรายการที่คุณได้ใช้ในขณะนี้.
 `;
-console.log(serveorder)
+
+  const HBtest = hborder?.map((data) => {
+    if (data.status != PaymentStatus.CancelTransaction)
+      return (
+        <>
+          <tr key={data.id}>
+            <th scope="row">{data.name}</th>
+            <th scope="row">{data.sumDate} วัน</th>
+
+            <td>
+              {data.image ? (
+                <img src={data.image} style={{ height: "200px" }} alt="" />
+              ) : (
+                <img
+                  src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                  style={{ height: "20rem" }}
+                  alt=""
+                />
+              )}
+            </td>
+            <td>
+              {/* {data.status} */}
+              {
+                // products?.isUsed == "1" ?
+                data?.status == PaymentStatus.WorkInProgress ? (
+                  <Button danger>ยังไม่ได้ชำระ</Button>
+                ) : data?.status == PaymentStatus.WaitingForCheck ? (
+                  <Button
+                    type="primary"
+                    style={{
+                      color: "#ffc107",
+                      borderColor: "#ffc107",
+                    }}
+                    ghost
+                  >
+                    รอตรวจสอบ
+                  </Button>
+                ) : data?.status == PaymentStatus.SuccessfulTransaction ? (
+                  <Button
+                    type="primary"
+                    style={{
+                      color: "#198754",
+                      borderColor: "#198754",
+                    }}
+                    ghost
+                  >
+                    ชำระเงินแล้ว
+                  </Button>
+                ) : (
+                  // data?.status == PaymentStatus.CancelTransaction ?
+                  <Button
+                    type="primary"
+                    style={{
+                      color: "#6c757d",
+                      borderColor: "#6c757d",
+                    }}
+                    ghost
+                  >
+                    ยกเลิกรายการแล้ว
+                  </Button>
+                )
+              }
+            </td>
+            <td>
+              {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
+                <Button
+                  type="primary"
+                  ghost
+                  // onClick={() => navigate(`/ordetail/${data.id}`)}
+                  onClick={() => {
+                    setHBOrderId(data.id);
+                    setOpenOrder(true);
+                  }}
+                >
+                  {/* href={`/menudetail/${menu.fdId}`} */}
+                  <FileTextOutlined />
+                </Button>
+              ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
+                <>
+                  <Button
+                    type="primary"
+                    ghost
+                    ///detail
+                    onClick={() => {
+                      setHBOrderId(data.id);
+                      console.log(data.id);
+                      setOpenOrder(true);
+                    }}
+                  >
+                    <FileAddOutlined />
+                  </Button>
+
+                  <Button danger>
+                    <FileTextOutlined />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    type="primary"
+                    ghost
+                    ///detail
+                    // onClick={() => navigate(`/ordetail/${data.id}`)}
+                    onClick={() => {
+                      setHBOrderId(data.id);
+                      console.log(data.id);
+                      setOpenOrder(true);
+                    }}
+                  >
+                    <FileTextOutlined />
+                  </Button>
+                  <Button
+                    className=" btn-outline-success"
+                    // type=""
+                    style={
+                      {
+                        // color: "greenyellow",
+                        // borderColor: "greenyellow",
+                      }
+                    }
+                    ///addimage
+                    onClick={() => {
+                      onClickOpenPaymentForm(data.id);
+                    }}
+                  >
+                    <FileAddOutlined />
+                  </Button>
+                  <Button danger>
+                    <FileTextOutlined />
+                  </Button>
+                </>
+              )}
+            </td>
+          </tr>
+        </>
+      );
+    else <p>{text}</p>;
+  });
+
+
+
+
+  const Ordertest = order?.map((data) => {
+    // console.log(data.delstatus)
+    if (data.status != PaymentStatus.CancelTransaction)
+    return (
+      <tr key={data.id}>
+        {/* <th scope="row">{data.productName}</th> */}
+        <th scope="row">
+          {moment
+            .utc(data.createDate)
+            .tz("Asia/Bangkok")
+            // .format("DD-MM-YYYY HH:mm:ss"
+            .format("DD-MM-YYYY")}{" "}
+        </th>
+        <th scope="row">{data.productItemAmount} รายการ</th>
+
+        <td>
+          {data.productImage ? (
+            <img src={data.productImage} style={{ height: "200px" }} alt="" />
+          ) : (
+            <img
+              src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+              style={{ height: "20rem" }}
+              alt=""
+            />
+          )}
+        </td>
+        <td>
+          {/* {data.status} */}
+          {
+            // products?.isUsed == "1" ?
+            data.delStatus == "0" ? (
+              <Button type="primary" ghost style={{ color: "#1C8EF9 " }}>
+                กำลังจัดเตรียม
+              </Button>
+            ) : data.delStatus == "1" ? (
+              <Button
+                type="primary"
+                style={{
+                  color: "#ffc107",
+                  borderColor: "#ffc107",
+                }}
+                ghost
+              >
+                กำลังจัดส่ง
+              </Button>
+            ) : data.delStatus == "2" ? (
+              <Button
+                type="primary"
+                style={{
+                  color: "#198754",
+                  borderColor: "#198754",
+                }}
+                ghost
+              >
+                จัดส่งสำเร็จ
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{
+                  color: "#6c757d",
+                  borderColor: "#6c757d",
+                }}
+                ghost
+              >
+                เกิดข้อผิดพลาด
+              </Button>
+            )
+          }
+        </td>
+        <td>
+          {/* {data.status} */}
+          {
+            // products?.isUsed == "1" ?
+            data?.status == PaymentStatus.WorkInProgress ? (
+              <Button danger>ยังไม่ได้ชำระ</Button>
+            ) : data?.status == PaymentStatus.WaitingForCheck ? (
+              <Button
+                type="primary"
+                style={{
+                  color: "#ffc107",
+                  borderColor: "#ffc107",
+                }}
+                ghost
+              >
+                รอตรวจสอบ
+              </Button>
+            ) : data?.status == PaymentStatus.SuccessfulTransaction ? (
+              <Button
+                type="primary"
+                style={{
+                  color: "#198754",
+                  borderColor: "#198754",
+                }}
+                ghost
+              >
+                ชำระเงินแล้ว
+              </Button>
+            ) : (
+              // data?.status == PaymentStatus.CancelTransaction ?
+              <Button
+                type="primary"
+                style={{
+                  color: "#6c757d",
+                  borderColor: "#6c757d",
+                }}
+                ghost
+              >
+                ยกเลิกรายการแล้ว
+              </Button>
+            )
+          }
+        </td>
+        
+
+        <td>
+          {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
+            <Button
+              type="primary"
+              ghost
+              // onClick={() => navigate(`/ordetail/${data.id}`)}
+              onClick={() => {
+                setOrderId(data.id);
+                setOpenOrder2(true);
+              }}
+            >
+              {/* href={`/menudetail/${menu.fdId}`} */}
+              <FileTextOutlined />
+            </Button>
+          ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
+            <>
+              <Button
+                type="primary"
+                ghost
+                ///detail
+                onClick={() => {
+                  console.log(data.id);
+                  setOrderId(data.id);
+                  setOpenOrder2(true);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
+
+              <Button danger>
+                <FileTextOutlined />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                type="primary"
+                ghost
+                ///detail
+                // onClick={() => navigate(`/ordetail/${data.id}`)}
+                onClick={() => {
+                  console.log(data.id);
+                  setOrderId(data.id);
+                  setOpenOrder2(true);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
+              <Button
+                type="primary"
+                ///addimage
+                onClick={() => {
+                  onClickOpenPaymentForm2(data.id);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
+              <Button danger>
+                <FileTextOutlined />
+              </Button>
+            </>
+          )}
+        </td>
+        {/* <td>@mdo</td> */}
+      </tr>
+    );
+  });
+            
+
+  // const hborderText =() => {
+  //   hborder?.map((data) => {
+  //     if (data.status != PaymentStatus.CancelTransaction)
+  //       return (
+  //         <>
+  //           <tr key={data.id}>
+  //             <th scope="row">{data.name}</th>
+  //             <th scope="row">{data.sumDate} วัน</th>
+
+  //             <td>
+  //               {data.image ? (
+  //                 <img
+  //                   src={data.image}
+  //                   style={{ height: "200px" }}
+  //                   alt=""
+  //                 />
+  //               ) : (
+  //                 <img
+  //                   src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+  //                   style={{ height: "20rem" }}
+  //                   alt=""
+  //                 />
+  //               )}
+  //             </td>
+  //             <td>
+  //               {/* {data.status} */}
+  //               {
+  //                 // products?.isUsed == "1" ?
+  //                 data?.status == PaymentStatus.WorkInProgress ? (
+  //                   <Button danger>ยังไม่ได้ชำระ</Button>
+  //                 ) : data?.status ==
+  //                   PaymentStatus.WaitingForCheck ? (
+  //                   <Button
+  //                     type="primary"
+  //                     style={{
+  //                       color: "#ffc107",
+  //                       borderColor: "#ffc107",
+  //                     }}
+  //                     ghost
+  //                   >
+  //                     รอตรวจสอบ
+  //                   </Button>
+  //                 ) : data?.status ==
+  //                   PaymentStatus.SuccessfulTransaction ? (
+  //                   <Button
+  //                     type="primary"
+  //                     style={{
+  //                       color: "#198754",
+  //                       borderColor: "#198754",
+  //                     }}
+  //                     ghost
+  //                   >
+  //                     ชำระเงินแล้ว
+  //                   </Button>
+  //                 ) : (
+  //                   // data?.status == PaymentStatus.CancelTransaction ?
+  //                   <Button
+  //                     type="primary"
+  //                     style={{
+  //                       color: "#6c757d",
+  //                       borderColor: "#6c757d",
+  //                     }}
+  //                     ghost
+  //                   >
+  //                     ยกเลิกรายการแล้ว
+  //                   </Button>
+  //                 )
+  //               }
+  //             </td>
+  //             <td>
+  //               {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
+  //                 <Button
+  //                   type="primary"
+  //                   ghost
+  //                   // onClick={() => navigate(`/ordetail/${data.id}`)}
+  //                   onClick={() => {
+  //                     setHBOrderId(data.id);
+  //                     setOpenOrder(true);
+  //                   }}
+  //                 >
+  //                   {/* href={`/menudetail/${menu.fdId}`} */}
+  //                   <FileTextOutlined />
+  //                 </Button>
+  //               ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
+  //                 <>
+  //                   <Button
+  //                     type="primary"
+  //                     ghost
+  //                     ///detail
+  //                     onClick={() => {
+  //                       setHBOrderId(data.id);
+  //                       console.log(data.id);
+  //                       setOpenOrder(true);
+  //                     }}
+  //                   >
+  //                     <FileAddOutlined />
+  //                   </Button>
+
+  //                   <Button danger>
+  //                     <FileTextOutlined />
+  //                   </Button>
+  //                 </>
+  //               ) : (
+  //                 <>
+  //                   <Button
+  //                     type="primary"
+  //                     ghost
+  //                     ///detail
+  //                     // onClick={() => navigate(`/ordetail/${data.id}`)}
+  //                     onClick={() => {
+  //                       setHBOrderId(data.id);
+  //                       console.log(data.id);
+  //                       setOpenOrder(true);
+  //                     }}
+  //                   >
+  //                     <FileTextOutlined />
+  //                   </Button>
+  //                   <Button
+  //                     className=" btn-outline-success"
+  //                     // type=""
+  //                     style={
+  //                       {
+  //                         // color: "greenyellow",
+  //                         // borderColor: "greenyellow",
+  //                       }
+  //                     }
+  //                     ///addimage
+  //                     onClick={() => {
+  //                       onClickOpenPaymentForm(data.id);
+  //                     }}
+  //                   >
+  //                     <FileAddOutlined />
+  //                   </Button>
+  //                   <Button danger>
+  //                     <FileTextOutlined />
+  //                   </Button>
+  //                 </>
+  //               )}
+  //             </td>
+  //           </tr>
+  //         </>
+  //       );
+  //     else <p>{text}</p>;
+  //   })
+  // }
+  // console.log(serveorder)
 
   const onChange = (key: string | string[]) => {
     console.log(key);
@@ -125,6 +637,56 @@ console.log(serveorder)
     );
   });
 
+  const ordertest = orderDetail?.orderItem.map((data) => {
+    return (
+      <tr className="shadow p-3 mb-5 bg-white rounded" key={data.id}>
+        <td className="md-2">
+          <div className="d-flex-order align-items-center">
+            {data.productImage[0] ? (
+              <img
+                className="rounded-circle"
+                src={
+                  // "https://localhost:5000/images/" +
+                  data.productImage
+                }
+                style={{ width: "45px", height: "45px" }}
+                alt=""
+              />
+            ) : (
+              <img
+                className="rounded-circle"
+                src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                style={{ width: "45px", height: "45px" }}
+                alt=""
+              />
+            )}
+          </div>
+        </td>
+        <td className="md-2">
+          <p className="fw-normal mb-1">{data.productName}</p>
+        </td>
+
+        <td className="md-2">{data.productPrice} บาท</td>
+        {/* <td>{products.stock} ชิ้น</td> */}
+        <td className="md-2">{data.categoryName} </td>
+        <td>
+        {data.amount}
+          {/* {moment
+            .utc(data.checkIn)
+            .tz("Asia/Bangkok")
+            // .format("DD-MM-YYYY HH:mm:ss"
+            .format("DD-MM-YYYY")}{" "}
+          -
+          {moment
+            .utc(data.checkOut)
+            .tz("Asia/Bangkok")
+            // .format("DD-MM-YYYY HH:mm:ss"
+            .format("DD-MM-YYYY")} */}
+        </td>
+      </tr>
+    );
+  });
+
   return (
     // <>
 
@@ -148,142 +710,7 @@ console.log(serveorder)
                 <th scope="col">Handle</th> */}
               </tr>
             </thead>
-            <tbody>
-              {hborder?.map((data) => {
-                if (data.status != PaymentStatus.CancelTransaction)
-                  return (
-                    <>
-                      <tr key={data.id}>
-                        <th scope="row">{data.name}</th>
-                        <th scope="row">{data.sumDate} วัน</th>
-
-                        <td>
-                          {data.image ? (
-                            <img
-                              src={data.image}
-                              style={{ height: "200px" }}
-                              alt=""
-                            />
-                          ) : (
-                            <img
-                              src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
-                              style={{ height: "20rem" }}
-                              alt=""
-                            />
-                          )}
-                        </td>
-                        <td>
-                          {/* {data.status} */}
-                          {// products?.isUsed == "1" ?
-                          data?.status == PaymentStatus.WorkInProgress ? (
-                            <Button danger>ยังไม่ได้ชำระ</Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#ffc107",
-                                borderColor: "#ffc107",
-                              }}
-                              ghost
-                            >
-                              รอตรวจสอบ
-                            </Button>
-                          ) : data?.status ==
-                            PaymentStatus.SuccessfulTransaction ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#198754",
-                                borderColor: "#198754",
-                              }}
-                              ghost
-                            >
-                              ชำระเงินแล้ว
-                            </Button>
-                          ) : (
-                            // data?.status == PaymentStatus.CancelTransaction ?
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#6c757d",
-                                borderColor: "#6c757d",
-                              }}
-                              ghost
-                            >
-                              ยกเลิกรายการแล้ว
-                            </Button>
-                          )}
-                        </td>
-                        <td>
-                          {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
-                            <Button
-                              type="primary"
-                              ghost
-                              // onClick={() => navigate(`/ordetail/${data.id}`)}
-                              onClick={() => {
-                                setHBOrderId(data.id);
-                                setOpenOrder(true);
-                              }}
-                            >
-                              {/* href={`/menudetail/${menu.fdId}`} */}
-                              <FileTextOutlined />
-                            </Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
-                            <>
-                              <Button
-                                type="primary"
-                                ghost
-                                ///detail
-                                onClick={() => {
-                                  setHBOrderId(data.id);
-                                  console.log(data.id);
-                                  setOpenOrder(true);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-
-                              <Button danger>
-                                <FileTextOutlined />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                type="primary"
-                                ghost
-                                ///detail
-                                // onClick={() => navigate(`/ordetail/${data.id}`)}
-                                onClick={() => {
-                                  setHBOrderId(data.id);
-                                  console.log(data.id);
-                                  setOpenOrder(true);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-                              <Button
-                                type="primary"
-                                ///addimage
-                                onClick={() => {
-                                  onClickOpenPaymentForm(data.id);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-                              <Button danger>
-                                <FileTextOutlined />
-                              </Button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    </>
-                  );
-                else <p>{text}</p>;
-              })
-              }
-            </tbody>
+            <tbody>{!hborder ? <>{text}</> : <>{HBtest}</>}</tbody>
           </table>
         }
 
@@ -292,6 +719,20 @@ console.log(serveorder)
           setOpenModal={setOpenModalTransferPayment}
           id={id}
           setOrderId={setId}
+        />
+
+        <AddImgOrder
+          openModal={openModalTransferPayment2}
+          setOpenModal={setOpenModalTransferPayment2}
+          id={id2}
+          setOrderId={setId2}
+        />
+
+        <AddImgServeOrder
+          openModal={openModalTransferPayment3}
+          setOpenModal={setOpenModalTransferPayment3}
+          id={id3}
+          setOrderId={setId3}
         />
 
         <Modal
@@ -335,13 +776,137 @@ console.log(serveorder)
               <br />
               <Item>
                 <h3>หลักฐานการโอน</h3>
-                <img width={300} height={300} src={hborderdetail?.payimage} />
+                {hborderdetail?.payimage ? (
+                  <img width={300} height={300} src={hborderdetail?.payimage} />
+                ) : (
+                  <img
+                    src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                    style={{ height: "20rem" }}
+                    alt=""
+                  />
+                )}
               </Item>
             </>
           ) : (
             ""
           )}
         </Modal>
+
+        <Modal
+          title="รายระเอียดการจอง"
+          centered
+          open={openOrder2}
+          onOk={() => {
+            setOpenOrder2(false);
+            setOrderId("");
+          }}
+          onCancel={() => {
+            setOpenOrder2(false);
+            setOrderId("");
+          }}
+          width={1000}
+        >
+          {orderDetail ? (
+            <>
+              <p>id : {orderDetail?.id}</p>
+              {/* <p>some contents...</p> */}
+
+              <table
+                // ref={componentRef}
+                className="table align-middle mb-0  "
+              >
+                <thead>
+                  <h3>รายการที่พัก</h3>
+
+                  <tr className="bg-secondary">
+                    <th>ที่พัก</th>
+                    <th>ชื่อที่พัก</th>
+                    <th>ราคา/คืน</th>
+                    {/* <th>จำนวน</th> */}
+                    <th>ประเภทที่พัก</th>
+                    <th>ระยะเวลาที่จอง</th>
+                    {/* <th>การจัดการ</th> */}
+                  </tr>
+                </thead>
+                <tbody>{ordertest}</tbody>
+              </table>
+              <br />
+              <Item>
+                <h3>หลักฐานการโอน</h3>
+                {hborderdetail?.payimage ? (
+                  <img width={300} height={300} src={hborderdetail?.payimage} />
+                ) : (
+                  <img
+                    src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                    style={{ height: "20rem" }}
+                    alt=""
+                  />
+                )}
+              </Item>
+            </>
+          ) : (
+            ""
+          )}
+        </Modal>
+
+        <Modal
+          title="รายระเอียดการจอง"
+          centered
+          open={openOrder}
+          onOk={() => {
+            setOpenOrder(false);
+            setHBOrderId("");
+          }}
+          onCancel={() => {
+            setOpenOrder(false);
+            setHBOrderId("");
+          }}
+          width={1000}
+        >
+          {hborderdetail ? (
+            <>
+              <p>id : {hborderdetail?.id}</p>
+              {/* <p>some contents...</p> */}
+
+              <table
+                // ref={componentRef}
+                className="table align-middle mb-0  "
+              >
+                <thead>
+                  <h3>รายการที่พัก</h3>
+
+                  <tr className="bg-secondary">
+                    <th>ที่พัก</th>
+                    <th>ชื่อที่พัก</th>
+                    <th>ราคา/คืน</th>
+                    {/* <th>จำนวน</th> */}
+                    <th>ประเภทที่พัก</th>
+                    <th>ระยะเวลาที่จอง</th>
+                    {/* <th>การจัดการ</th> */}
+                  </tr>
+                </thead>
+                <tbody>{producttest}</tbody>
+              </table>
+              <br />
+              <Item>
+                <h3>หลักฐานการโอน</h3>
+                {hborderdetail?.payimage ? (
+                  <img width={300} height={300} src={hborderdetail?.payimage} />
+                ) : (
+                  <img
+                    src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                    style={{ height: "20rem" }}
+                    alt=""
+                  />
+                )}
+              </Item>
+            </>
+          ) : (
+            ""
+          )}
+        </Modal>
+
+
       </Panel>
 
       <Panel
@@ -359,181 +924,7 @@ console.log(serveorder)
                 <th scope="col">Handle</th> */}
               </tr>
             </thead>
-            <tbody>
-              {order?.map((data) => {
-                if (data.status == 0)
-                  return (
-                    <tr key={data.id}>
-                      <th scope="row">{data.productName}</th>
-                      <th scope="row">x{data.productItemAmount}</th>
-
-                      <td>
-                        {data.productImage ? (
-                          <img
-                            src={data.productImage}
-                            style={{ height: "200px" }}
-                            alt=""
-                          />
-                        ) : (
-                          <img
-                            src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
-                            style={{ height: "20rem" }}
-                            alt=""
-                          />
-                        )}
-                      </td>
-                      <td>
-                          {/* {data.status} */}
-                          {// products?.isUsed == "1" ?
-                          data?.status == PaymentStatus.WorkInProgress ? (
-                            <Button danger>ยังไม่ได้ชำระ</Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#ffc107",
-                                borderColor: "#ffc107",
-                              }}
-                              ghost
-                            >
-                              รอตรวจสอบ
-                            </Button>
-                          ) : data?.status ==
-                            PaymentStatus.SuccessfulTransaction ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#198754",
-                                borderColor: "#198754",
-                              }}
-                              ghost
-                            >
-                              ชำระเงินแล้ว
-                            </Button>
-                          ) : (
-                            // data?.status == PaymentStatus.CancelTransaction ?
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#6c757d",
-                                borderColor: "#6c757d",
-                              }}
-                              ghost
-                            >
-                              ยกเลิกรายการแล้ว
-                            </Button>
-                          )}
-                        </td>
-                      <td>
-                          {/* {data.status} */}
-                          {// products?.isUsed == "1" ?
-                          data?.status == PaymentStatus.WorkInProgress ? (
-                            <Button danger>ยังไม่ได้ชำระ</Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#ffc107",
-                                borderColor: "#ffc107",
-                              }}
-                              ghost
-                            >
-                              รอตรวจสอบ
-                            </Button>
-                          ) : data?.status ==
-                            PaymentStatus.SuccessfulTransaction ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#198754",
-                                borderColor: "#198754",
-                              }}
-                              ghost
-                            >
-                              ชำระเงินแล้ว
-                            </Button>
-                          ) : (
-                            // data?.status == PaymentStatus.CancelTransaction ?
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#6c757d",
-                                borderColor: "#6c757d",
-                              }}
-                              ghost
-                            >
-                              ยกเลิกรายการแล้ว
-                            </Button>
-                          )}
-                        </td>
-                        <td>
-                          {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
-                            <Button
-                              type="primary"
-                              ghost
-                              // onClick={() => navigate(`/ordetail/${data.id}`)}
-                              onClick={() => {
-                                setHBOrderId(data.id);
-                                setOpenOrder(true);
-                              }}
-                            >
-                              {/* href={`/menudetail/${menu.fdId}`} */}
-                              <FileTextOutlined />
-                            </Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
-                            <>
-                              <Button
-                                type="primary"
-                                ghost
-                                ///detail
-                                onClick={() => {
-                                  setHBOrderId(data.id);
-                                  console.log(data.id);
-                                  setOpenOrder(true);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-
-                              <Button danger>
-                                <FileTextOutlined />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                type="primary"
-                                ghost
-                                ///detail
-                                // onClick={() => navigate(`/ordetail/${data.id}`)}
-                                onClick={() => {
-                                  setHBOrderId(data.id);
-                                  console.log(data.id);
-                                  setOpenOrder(true);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-                              <Button
-                                type="primary"
-                                ///addimage
-                                onClick={() => {
-                                  onClickOpenPaymentForm(data.id);
-                                }}
-                              >
-                                <FileTextOutlined />
-                              </Button>
-                              <Button danger>
-                                <FileTextOutlined />
-                              </Button>
-                            </>
-                          )}
-                        </td>
-                      <td>@mdo</td>
-                    </tr>
-                  );
-              })}
-            </tbody>
+            <tbody>{Ordertest}</tbody>
           </table>
         }
       </Panel>
@@ -576,11 +967,10 @@ console.log(serveorder)
                       )}
                     </td>
                     <td>
-                      
-
-                    <td>
-                          {/* {data.status} */}
-                          {// products?.isUsed == "1" ?
+                      <td>
+                        {/* {data.status} */}
+                        {
+                          // products?.isUsed == "1" ?
                           data?.status == PaymentStatus.WorkInProgress ? (
                             <Button danger>ยังไม่ได้ชำระ</Button>
                           ) : data?.status == PaymentStatus.WaitingForCheck ? (
@@ -618,8 +1008,9 @@ console.log(serveorder)
                             >
                               ยกเลิกรายการแล้ว
                             </Button>
-                          )}
-                        </td>
+                          )
+                        }
+                      </td>
                     </td>
                     <td>@mdo</td>
                   </tr>

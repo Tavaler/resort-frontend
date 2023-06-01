@@ -11,7 +11,13 @@ const Footer =() => {
               <div className="ft-about">
                 <div className="logo">
                   <a href="#">
-                    <img src="img/footer-logo.png" alt="" />
+                    {/* <img src="img/footer-logo.png" alt="" /> */}
+                    <img
+                    className="img-fluid"
+                    style={{ maxHeight: "4rem", maxWidth: "auto" }}
+                    src="https://drive.google.com/uc?id=1hWb2v2IBqOHtIUq5ENhgMf-Tog5dx4Dr"
+                    alt=""
+                  />
                   </a>
                 </div>
                 <p>

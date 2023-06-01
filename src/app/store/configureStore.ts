@@ -13,6 +13,7 @@ import { serveCartSlice } from './ServeCartSlice';
 import { hborderSlice } from './hbOrderSlice';
 import { orderSlice } from './orderSlice';
 import { serveorderSlice } from './serveOrderSlice';
+import { reportSlice } from './reportSlice';
 
 
 export const store = configureStore({
@@ -28,7 +29,9 @@ export const store = configureStore({
         serveCart : serveCartSlice.reducer,
         hbOrder: hborderSlice.reducer,
         order: orderSlice.reducer,
-        serveOrder:serveorderSlice.reducer
+        serveOrder:serveorderSlice.reducer,
+        report:reportSlice.reducer
+
     } ,
   });
 
