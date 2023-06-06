@@ -5,7 +5,9 @@ import { Account, Login, Register, Role } from "../models/user";
 interface AccountState {
   user: Account[] | null;
   userLoaded : boolean;
+
   account: Register | null;
+  accountLoad :boolean;
   roles: Role[] | null;
   token: string | null;
 }
@@ -15,7 +17,8 @@ const initialState: AccountState = {
   account: null,
   token: null,
   user: null,
-  userLoaded: false
+  userLoaded: false,
+  accountLoad: false
 };
 
 export interface setUpAccount {
@@ -36,6 +39,7 @@ export const GetAll = createAsyncThunk<Account[]>(
     }
   }
 );
+
 
 export const loginAccount = createAsyncThunk<any, Login>(
   "user/Login",
@@ -64,6 +68,16 @@ export const loginAccount = createAsyncThunk<any, Login>(
   }
 );
 
+export const GetUserAll = createAsyncThunk<Account[]>(
+  'Account/GetUserAll',
+  async (_, thunkAPI) => {
+      try {
+          return await agent.Account.getAll();
+      } catch (error: any) {
+          return thunkAPI.rejectWithValue({ error: error.data });
+      }
+  }
+);
 // ------------------------------------------------------------------
 
 export const fetchAccount = createAsyncThunk<Register>(
@@ -143,6 +157,11 @@ export const accountSlice = createSlice({
       state.userLoaded = true
   });
 
+  //   builder.addCase(fetchAccount.fulfilled, (state, action) => {
+  //     state.account = action.payload
+  //     state.accountLoad = true
+  // });
+  
     builder.addCase(loginAccount.fulfilled, (state, action) => {
       if (action.payload.result) {
         state.account = action.payload.result.account;

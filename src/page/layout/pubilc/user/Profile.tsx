@@ -2,7 +2,7 @@ import moment from "moment-timezone";
 import { useEffect } from "react";
 import OrderAll from "../orderAll/orderAll";
 import LayoutPubilc from "../Layout/LayoutPubilc";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { 
   // ErrorMessage,
    Formik } from "formik";
@@ -15,8 +15,8 @@ import { UpdateAccountValidate } from "../../../AccontValidate";
 // import moment from "moment-timezone";
 
 function Profile() {
-  const { id } = useParams<{ id: any }>();
-  console.log(`id :${id}`);
+  // const { id } = useParams<{ id: any }>();
+  // console.log(`id :${id}`);
 
   // const { AcmdType } = useAppSelector((state) => state.acmdType);
 

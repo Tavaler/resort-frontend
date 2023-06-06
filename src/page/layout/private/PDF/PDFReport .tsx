@@ -14,9 +14,8 @@ import { GetProductStatistics } from "../../../../app/models/report";
 
 
 
-
 //Font.register({ family: "My_Custom_Font", src: myCustomFont }); //การเรียกใช้ฟอนต์
-Font.register({ family: "My_Custom_Font", src:"/cs63/s03/project-end/"+ myCustomFont, }); //การเรียกใช้ฟอนต์ตอนอัฟขึ้นเซิฟเวอร์
+Font.register({ family: "My_Custom_Font", src:"/cs63/s15/resort/fornt/assets/"+ myCustomFont, }); //การเรียกใช้ฟอนต์ตอนอัฟขึ้นเซิฟเวอร์
 interface Prop {
   report: GetProductStatistics[];
 }
@@ -40,7 +39,7 @@ function PDFProduct({ report }: Prop) {
         </View>
         {report?.map((data: GetProductStatistics) => {
           return (
-            <>
+
               <View style={styles.tableRow} key={data.product.fdId}>
                 <View style={styles.tableColB}>
                   <Text>{data.product.fdName}</Text>
@@ -52,7 +51,6 @@ function PDFProduct({ report }: Prop) {
                   <Text>{data.numPercen}</Text>
                 </View>
               </View>
-            </>
           );
         })}
       </>

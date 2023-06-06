@@ -12,6 +12,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { DeletServe, GetServeAll } from '../../../../app/store/serveSlice';
 import { useReactToPrint } from 'react-to-print';
 import { PrinterOutlined } from '@ant-design/icons';
+import { URLSever } from '../../../../util/util';
 
 function ServeListV2() {
 
@@ -24,13 +25,13 @@ function ServeListV2() {
     content: () => componentRef.current,
     documentTitle: "emp0data",
   });
-  
+
   const { serveLoaded, serve } = useAppSelector((state) => state.serve);
     console.log("serve", serve);
     useEffect(() => {
       if (!serveLoaded) dispatch(GetServeAll());
     }, [serveLoaded, dispatch]);
-  
+
   const Delete = (id: any) => {
     Swal.fire({
       title: "ยืนยันที่จะลบหรือไม่?",
@@ -70,9 +71,13 @@ function ServeListV2() {
       <tr key={products.serveId}>
         <td className="md-2">
           <div className="d-flex-order align-items-center">
-            
-              {products.serveImgs[0] ?  <img className="rounded-circle" src={"https://localhost:5000/images/"+products.serveImgs[0].image} style={{ width: "45px", height: "45px" }} alt="" /> : <img className="rounded-circle" src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ width: "45px", height: "45px" }} alt="" />}
-              
+
+              {products.serveImgs[0] ?  <img className="rounded-circle"
+              src={
+                // "https://localhost:5000/images/"
+                URLSever
+                +products.serveImgs[0].image} style={{ width: "45px", height: "45px" }} alt="" /> : <img className="rounded-circle" src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ width: "45px", height: "45px" }} alt="" />}
+
             {/* <div className="ms-3">
               <p className="fw-bold mb-1">รหัสสิค้า: {products.fdId}</p>
               <p className="text-muted mb-0"></p>
@@ -101,7 +106,7 @@ function ServeListV2() {
            onClick={()=>navigate(`/AddImageServe/${products.serveId}`)} className=" btn-sm btn-rounded">
             <AddPhotoAlternateIcon />
           </Button>
-          
+
           {/* <Button style={{ left: "10px" }} className=" btn-sm btn-rounded">
             <MoreHorizIcon />
           </Button> */}
@@ -115,7 +120,7 @@ function ServeListV2() {
             <DeleteForeverIcon />
           </Button>
 
-          
+
         </td>
       </tr>
     );
@@ -126,7 +131,7 @@ function ServeListV2() {
 
   return (
     <LayoutAdmin>
-    
+
               <table ref={componentRef} className="table align-middle mb-0 bg-white">
             <thead className="bg-light">
               <h3>รายการบริการ</h3>
@@ -156,9 +161,9 @@ function ServeListV2() {
             <tbody>{producttest}</tbody>
           </table>
           <hr />
-    
+
         </LayoutAdmin>
-       
+
       );
 }
 

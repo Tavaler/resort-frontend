@@ -99,6 +99,7 @@ function App() {
 
   return (
     <>
+    {/* http://10.103.0.16/cs63/s15/resort/fornt/ */}
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<Home />} />
@@ -122,9 +123,8 @@ function App() {
           }
         />
         <Route path="/rooms" element={<Room />} />
-        <Route path="/HBorderAll" element={<HBOrderList />} />
-        <Route path="/FDorderAll" element={<OrderList />} />
-        <Route path="/ServeorderAll" element={<ServeOrderList />} />
+
+
         
         <Route path="/profile" element={<Profile />} />
 
@@ -133,6 +133,8 @@ function App() {
 
 
         <Route path="/roomsdetail/:id" element={<AcmdDetail />} />
+
+        
 
         <Route element={<PrivateRoute roles={[RoleInfo.Admin]} />}>
           {/* <Header /> */}
@@ -151,6 +153,10 @@ function App() {
           <Route path="/acmdList" element={<AcmdListV2 />} />
 
           <Route path="/serveList" element={<ServeListV2 />} />
+
+          <Route path="/HBorderAll" element={<HBOrderList />} />
+        <Route path="/FDorderAll" element={<OrderList />} />
+        <Route path="/ServeorderAll" element={<ServeOrderList />} />
 
 
           

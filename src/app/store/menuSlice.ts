@@ -7,7 +7,6 @@ interface MenuState{
     productsLoaded : boolean;
     detailfd : FoodDrink | null;
     productsdetailLoaded : boolean;
-    
 }
 
 const initialState : MenuState= {

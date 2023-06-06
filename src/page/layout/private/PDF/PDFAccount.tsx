@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import myCustomFont from "./Font/K2D-Bold.ttf";  //ประกาศ import 1 ตัวแปร โดยจากตำแหน่งฟอนต์ที่ดาวโหลดจาก google font ใส่โปรเจ็ค  
+import myCustomFont from "./fonts/K2D-Bold.ttf";  //ประกาศ import 1 ตัวแปร โดยจากตำแหน่งฟอนต์ที่ดาวโหลดจาก google font ใส่โปรเจ็ค  
 
 // import { User } from "../../../models/Account";
 import { Account } from "../../../../app/models/user";
@@ -15,7 +15,7 @@ import { Account } from "../../../../app/models/user";
 
 
 //Font.register({ family: "My_Custom_Font", src: myCustomFont }); //การเรียกใช้ฟอนต์
-Font.register({ family: "My_Custom_Font", src:"/cs63/s03/project-end/"+ myCustomFont, }); //การเรียกใช้ฟอนต์ตอนอัฟขึ้นเซิฟเวอร์
+Font.register({ family: "My_Custom_Font", src:"/cs63/s15/resort/fornt/assets/"+ myCustomFont, }); //การเรียกใช้ฟอนต์ตอนอัฟขึ้นเซิฟเวอร์
 interface Prop {
   account: Account[];
 }

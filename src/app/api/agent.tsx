@@ -32,8 +32,10 @@ const createFormData = (item: any) => {
 const requests = {
     get: (url: string) => axios.get(url).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
-    put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
-    delete: (url: string) => axios.delete(url).then(responseBody),
+    // put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
+    // delete: (url: string) => axios.delete(url).then(responseBody),
+    put: (url: string, body: {}) => axios.post(url, body).then(responseBody),
+    delete: (url: string) => axios.put(url).then(responseBody),
 }
 
 const Account = {
@@ -211,6 +213,18 @@ const ServeOrder = {
 const Report = {
     getProductStatistics: () => requests.get("Report/GetProductStatistics"),
     getSalesStatistics: () => requests.get("Report/GetSalesStatistics"),
+    // getSalesStatistics: (date : any = null) => {
+    //     if(date) return  requests.get(`Report/GetSalesStatisticsYear?date=${date}`)
+    //     requests.get(`Report/GetSalesStatisticsYear`)
+
+    // },
+    
+    // GetSalesStatisticsYear?date=2023
+    getReport: (date : any = null) => {
+        if(date) return requests.get(`Report/GetsalesCommunityDTO?date=${date}`)
+       return requests.get(`Report/GetsalesCommunityDTO`)
+    },
+
 
     getAccmdStatistics: () => requests.get("Report/GetAccmdStatistics"),
     getAccmdSalesStatistics: () => requests.get("Report/GetAccmdSalesStatistics"),

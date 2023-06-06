@@ -25,6 +25,7 @@ import {
 } from "../../../../app/store/accommodationSlice";
 import { useReactToPrint } from "react-to-print";
 import { PrinterOutlined } from "@ant-design/icons";
+import { URLSever } from "../../../../util/util";
 
 const AcmdListV2 = () => {
   const dispatch = useAppDispatch();
@@ -129,7 +130,8 @@ const AcmdListV2 = () => {
               <img
                 className="rounded-circle"
                 src={
-                  "https://localhost:5000/images/" +
+                  URLSever
+                  +
                   products.accommodationImgs[0].image
                 }
                 style={{ width: "45px", height: "45px" }}

@@ -8,6 +8,7 @@ export interface ServeOrder {
     serveId:    number;
     name:       string;
     amount:     number;
+    checkIn:        Date;
     price:      number;
     sumPrice:   number;
     image:      string;
@@ -22,6 +23,7 @@ export interface ServeOrderCreate {
 export interface ServeOrderItem {
     idServeCart: number;
     serveId:     number;
+    checkIn:        Date;
     // accountId:   string;
     amount:      number;
 }

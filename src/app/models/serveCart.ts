@@ -1,6 +1,7 @@
 export interface ServeCart {
     id:             number;
     serveId:        number;
+    checkIn:        Date;
     amount:         number;
     createDate:     Date;
     sumAmountPrice: number;
@@ -12,6 +13,7 @@ export interface ServeCart {
 export interface AddServeCart {
     serveId:        number;
     accountId:      string,
+    checkIn:        Date;
     amount:         number;
 
 }

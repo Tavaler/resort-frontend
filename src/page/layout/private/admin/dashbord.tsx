@@ -29,15 +29,21 @@ import LayoutAdmin from './LayoutAdmin';
 import useReport from '../../../../app/hook/useReport';
 // import agent from '../../../../app/api/agent';
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import Chart2 from '../Charts/Chart2';
 
 ReactFC.fcRoot(FusionCharts, Charts ,FusionTheme);
 
 const Dashbord = () => {
     
-    const {productStatistics ,salesStatistics }= useReport();
+    const {productStatistics ,salesStatistics ,salesCommunity}= useReport();
     const {fds} = useProduct()
     const {user}=useUser()
-    // console.log("salesCommunity",salesCommunity)
+    console.log(`fds = ${fds?.length}`,`user = ${user?.length}`)
+    // console.log(fds?.length)
+
+
+    
+    console.log("salesCommunity",salesCommunity)
     const [typeChart, setTypeChart] = useState<string>("doughnut3d");
 
     const dataChartProductStatistics: TypeDataChart[] = productStatistics?.map(info => ({
@@ -117,6 +123,7 @@ const Dashbord = () => {
     ];
 
     const data = dataMonth.map(data => {
+        
         const percent = salesStatistics?.sales.filter(e => e.month === data.key).reduce((curNumber, item) => {
             return curNumber + item.percent;
         }, 0);;
@@ -195,104 +202,165 @@ const Dashbord = () => {
 //   };
 //   console.log("dateString",dateString)
     return (
-         <LayoutAdmin>
-          
-            <Space direction='vertical' size={"large"} style={{ display: "flex" }} >
-               
+      <LayoutAdmin>
+        <Space direction="vertical" size={"large"} style={{ display: "flex" }}>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-3 col-sm-6">
+                <div className="facts1-item">
+                  <h2>
+                    <span className="odometer" data-count="15">
+                      00
+                    </span>
+                    +
+                  </h2>
+                  <span>จำนวนรายได้</span>
+                  <Avatar
+                    className="factss-icon"
+                    size={70}
+                    src="https://drive.google.com/uc?id=1PUfh3eQH6G7RU5hXL0R_B3p7iQllcHiL"
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3 col-sm-6">
+                <div className="facts2-item">
+                  <h2>
+                    <span className="odometer" data-count="99">
+                      {fds?.length}
+                    </span>
+                    +
+                  </h2>
+                  <span>จำนวนสินค้า</span>
+                  <Avatar
+                    className="factss-icon"
+                    size={70}
+                    src="https://drive.google.com/uc?id=1PhzdUP9Tlg0AL3sKubkYOdW17N-U1YD-"
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3 col-sm-6">
+                <div className="facts3-item">
+                  <h2>
+                    <span className="odometer" data-count="365">
+                      {user?.length}
+                    </span>
+                    +
+                  </h2>
+                  <span>จำนวนสมาชิก</span>
+                  <Avatar
+                    className="factss-icon"
+                    size={70}
+                    src="https://drive.google.com/uc?id=1RvoVUYmOFqcrsfkcc6rjMWZ3W8QhWo43"
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3 col-sm-6">
+                <div className="facts4-item">
+                  <h2>
+                    <span className="odometer" data-count="26">
+                      00
+                    </span>
+                    +
+                  </h2>
+                  <span>จำนวนการจัดส่ง</span>
+                  <Avatar
+                    className="factss-icon"
+                    size={70}
+                    src="https://drive.google.com/uc?id=1wBhcG7hDMTDNIbhk-6lybXgrVK_aKK9y"
+                  />
+                </div>
+              </div>
+            </div>
+            <Button onClick={handlePrint} className="mr-2">
+              <PrinterOutlined style={{}} />
+              Print
+            </Button>
+            <Button
+              // onClick={handleOnExport}
+              className="mr-2"
+            >
+              <FileExcelOutlined />
+              Excel
+            </Button>
+            <PDFDownloadLink
+              document={
+                <PDFReport
+                  report={
+                    productStatistics as unknown as GetProductStatistics[]
+                  }
+                />
+              }
+              fileName="รายงาน.pdf"
+              onClick={() => console.log(productStatistics)}
+            >
+              <Button
+                className=" btn-sm btn-rounded"
+                style={{ marginTop: "5px", marginLeft: "0.25%" }}
+                // danger
+              >
+                <FilePdfOutlined /> PDF
+              </Button>
+            </PDFDownloadLink>
+          </div>
 
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-3 col-sm-6">
-                                <div className="facts1-item">
-                                    <h2><span className="odometer" data-count="15">00</span>+</h2>
-                                    <span>จำนวนรายได้</span>
-                                 <Avatar className="factss-icon" size={70} src="https://drive.google.com/uc?id=1PUfh3eQH6G7RU5hXL0R_B3p7iQllcHiL" />
-                                </div>
-                            </div>
-                            <div className="col-lg-3 col-sm-6">
-                                <div className="facts2-item">
-                                    <h2><span className="odometer" data-count="99">{fds?.length}</span>+</h2>
-                                    <span>จำนวนสินค้า</span>
-                                    <Avatar className="factss-icon" size={70} src="https://drive.google.com/uc?id=1PhzdUP9Tlg0AL3sKubkYOdW17N-U1YD-" />
-                                </div>
-                            </div>
-                            <div className="col-lg-3 col-sm-6">
-                                <div className="facts3-item">
-                                    <h2><span className="odometer" data-count="365">{user?.length}</span>+</h2>
-                                    <span>จำนวนสมาชิก</span>
-                                    <Avatar className="factss-icon" size={70} src="https://drive.google.com/uc?id=1RvoVUYmOFqcrsfkcc6rjMWZ3W8QhWo43" />
-                                </div>
-                            </div>
-                            <div className="col-lg-3 col-sm-6">
-                                <div className="facts4-item">
-                                    <h2><span className="odometer" data-count="26">00</span>+</h2>
-                                    <span>จำนวนการจัดส่ง</span>
-                                    <Avatar className="factss-icon" size={70} src="https://drive.google.com/uc?id=1wBhcG7hDMTDNIbhk-6lybXgrVK_aKK9y" />
-                                </div>
-                            </div>
-                        </div>
-                        <Button onClick={handlePrint} className="mr-2"><PrinterOutlined style={{}}/>Print</Button>
-                        <Button 
-                        // onClick={handleOnExport}
-                         className="mr-2"><FileExcelOutlined />Excel</Button>
-                        <PDFDownloadLink
-        document={<PDFReport  report={productStatistics as unknown as GetProductStatistics[]} />}
-        fileName="รายงาน.pdf"
-        onClick={() =>
-        console.log(productStatistics)
-
-        }
-      >
-        <Button
-          className=" btn-sm btn-rounded"
-          style={{marginTop:"5px", marginLeft: "0.25%" }}
-          // danger
-        >
-          <FilePdfOutlined /> PDF
-        </Button>
-      </PDFDownloadLink>
-                    </div>
-              
-                <div ref={componentRef}>
-                    <Row gutter={16} >
-                        <Col className="gutter-row center" span={12} >
-                            <Card title="สถิติสินค้า" extra={DropdownChart01} className='text-st' bordered={false} style={{ width: "100%" }}>
-                                <Doughnut3D data={dataChartProductStatistics} ReactFC={ReactFC} typeChart={typeChart} />
-                            </Card>
-                        </Col>
-                        <Col className="gutter-row center" span={12}>
-                            <Card title="สถิติการขาย" className='text-st' bordered={false} style={{ width: "100%" }}>
-                                <Column3D data={data} ReactFC={ReactFC} />
-                            </Card>
-                        </Col>
-                    </Row>
-                    {/* <DatePicker placeholder="กำหนดปี"  onChange={onChange} picker="year" style={{ marginTop: "25px", marginRight: "25px" }} /> */}
-                    <Row gutter={16}>
-                        {/* <Col className="gutter-row center" span={12}>
+          <div ref={componentRef}>
+            <Row gutter={16}>
+              <Col className="gutter-row center" span={12}>
+                <Card
+                  title="สถิติรายการการสั่งอาหาร"
+                  extra={DropdownChart01}
+                  className="text-st"
+                  bordered={false}
+                  style={{ width: "100%" }}
+                >
+                  <Doughnut3D
+                    data={dataChartProductStatistics}
+                    ReactFC={ReactFC}
+                    typeChart={typeChart}
+                  />
+                </Card>
+              </Col>
+              <Col className="gutter-row center" span={12}>
+                <Card
+                  title="สถิติการขาย"
+                  className="text-st"
+                  bordered={false}
+                  style={{ width: "100%" }}
+                >
+                  <Column3D data={data} ReactFC={ReactFC} />
+                </Card>
+              </Col>
+            </Row>
+            {/* <DatePicker placeholder="กำหนดปี"  onChange={onChange} picker="year" style={{ marginTop: "25px", marginRight: "25px" }} /> */}
+            <Row gutter={16}>
+              {/* <Col className="gutter-row center" span={12}>
                             <Card title="สถิติสินค้า" extra={DropdownChart01} className='text-st' bordered={false} style={{ width: "100%" }}>
                                 <Doughnut3D data={dataChartProductStatistics} ReactFC={ReactFC} typeChart={typeChart} />
                             </Card>
                         </Col> */}
-                        
-                        {/* <Col className="gutter-row center" span={12}>
-                            <Card title="สถิติชุมชน" className='text-st' bordered={false} style={{ width: "100%" }}>
 
-                                <Chart2
-                    data={salesCommunity}
+              <Col className="gutter-row center" span={12}>
+                <Card
+                  title="สถิติชุมชน"
+                  className="text-st"
+                  bordered={false}
+                  style={{ width: "100%" }}
+                >
+                  {/* <Column3D data={tests} ReactFC={ReactFC} /> */}
+                  <Chart2
+                    data2={salesCommunity}
                     ReactFC={ReactFC}
                     toTalPrice={salesCommunity?.totalPrice}
                     typeChart="bar3d"
                   />
-                            </Card>
-                        </Col> */}
-                        
-                    </Row>
-                    
-                </div>
-            </Space>
-
-        </LayoutAdmin>
-    )
+                </Card>
+              </Col>
+              
+            </Row>
+          </div>
+        </Space>
+      </LayoutAdmin>
+    );
 }
 
 export default Dashbord;

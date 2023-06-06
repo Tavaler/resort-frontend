@@ -1,8 +1,11 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { GetMenuAll, GetByIdFd, resetDetailFd } from "../../app/store/menuSlice";
+import { GetMenuAll,
+  //  GetByIdFd,
+  //  resetDetailFd 
+  } from "../../app/store/menuSlice";
 import { GetCategoryFd } from "../../app/store/FdCategorySilce";
 // import { GetCommunityGroup } from "../../store/CommunityGroupSilce";
 // import { GetLevelRaritys } from "../../Stone/LevelRaritySilce";
@@ -10,10 +13,10 @@ import { GetCategoryFd } from "../../app/store/FdCategorySilce";
 
 const useProduct = () => {
    
-    const { id } = useParams<{ id: any }>();
+    // const { id } = useParams<{ id: any }>();
     const dispatch = useAppDispatch()
     const { productsLoaded, fds } = useAppSelector((state) => state.menu);
-    const { productsdetailLoaded, detailfd } = useAppSelector((state) => state.menu);
+    // const { productsdetailLoaded, detailfd } = useAppSelector((state) => state.menu);
     // const { CommunityGroups } = useAppSelector((state) => state.communitygroup);
     const { CategoryFd  } = useAppSelector((state) => state.fdCategory);
     // const { LevelRaritys } = useAppSelector((state) => state.LevelRarity);
@@ -22,10 +25,10 @@ const useProduct = () => {
         if (!productsLoaded) dispatch(GetMenuAll());
       }, [productsLoaded, dispatch]);
 
-      useEffect(()=>{
-        if(!productsdetailLoaded)dispatch(GetByIdFd(id))
-        return()=>{ dispatch(resetDetailFd())}
-      },[detailfd,dispatch])
+      // useEffect(()=>{
+      //   if(!productsdetailLoaded)dispatch(GetByIdFd(id))
+      //   return()=>{ dispatch(resetDetailFd())}
+      // },[detailfd,dispatch])
 
       useEffect(() => {
         if (!CategoryFd) dispatch(GetCategoryFd());
@@ -37,8 +40,8 @@ const useProduct = () => {
     return {
         fds,
         productsLoaded,
-        detailfd,
-        productsdetailLoaded,
+        // detailfd,
+        // productsdetailLoaded,
         // CommunityGroups,
         CategoryFd,
         // LevelRaritys

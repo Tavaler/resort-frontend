@@ -43,7 +43,7 @@
     "react-to-print": "^2.14.12",
     "react-toastify": "^9.1.1",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.4.8",
+    "sweetalert2": "^11.7.10",
     "web-vitals": "^2.1.0",
     "yup": "^0.32.11"
   },

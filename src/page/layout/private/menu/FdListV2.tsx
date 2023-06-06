@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import LayoutAdmin from "../admin/LayoutAdmin";
 import PrinterOutlined from "@ant-design/icons/lib/icons/PrinterOutlined";
 import { useReactToPrint } from "react-to-print";
+import { URLSever } from "../../../../util/util";
 
 const FdListV2 = () => {
   const dispatch = useAppDispatch();
@@ -84,7 +85,11 @@ const FdListV2 = () => {
         <td className="md-2">
           <div className="d-flex-order align-items-center">
             
-              {products.fdImgs[0] ?  <img className="rounded-circle" src={"https://localhost:5000/images/"+products.fdImgs[0].fdImgName} style={{ width: "45px", height: "45px" }} alt="" /> : <img className="rounded-circle" src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ width: "45px", height: "45px" }} alt="" />}
+              {products.fdImgs[0] ?  <img className="rounded-circle" 
+              src={
+                // "https://localhost:5000/images/"
+                URLSever
+              +products.fdImgs[0].fdImgName} style={{ width: "45px", height: "45px" }} alt="" /> : <img className="rounded-circle" src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png" style={{ width: "45px", height: "45px" }} alt="" />}
               
             {/* <div className="ms-3">
               <p className="fw-bold mb-1">รหัสสิค้า: {products.fdId}</p>

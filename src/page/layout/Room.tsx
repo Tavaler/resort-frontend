@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { GetAcmdAll } from "../../app/store/accommodationSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import LayoutPubilc from "./pubilc/Layout/LayoutPubilc";
+import { URLSever } from "../../util/util";
 
 function Room() {
   const dispatch = useAppDispatch();
@@ -45,7 +46,9 @@ function Room() {
                     {acmd.accommodationImgs[0] ? (
                       <img
                         src={
-                          "https://localhost:5000/images/" +
+                          // "https://localhost:5000/images/" 
+                          URLSever
+                          +
                           acmd.accommodationImgs[0].image
                         }
                         style={{ height: "200px" }}

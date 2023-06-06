@@ -33,11 +33,11 @@ function Home() {
       {/* <NavbarV2 /> */}
       <Navbar />
       {/* <Header /> */}
+
+
+
       <div className="services-section">
-      
-
-
-
+        
         <Carousel autoplay>
           <center>
             <img
@@ -84,25 +84,22 @@ function Home() {
             <div className="col-lg-6">
               <div className="about-text">
                 <div className="section-title">
-                  <span>About Us</span>
+                  <span>เกี่ยวกับเรา</span>
                   <h2>
-                    Intercontinental LA <br />
-                    Westlake Hotel
+                  ทองผาภูมิ ริเวอร์  <br />
+                  (Thongphaphum River)
                   </h2>
                 </div>
                 <p className="f-para">
-                  Sona.com is a leading online accommodation site. We’re
-                  passionate about travel. Every day, we inspire and reach
-                  millions of travelers across 90 local websites in 41
-                  languages.
+                {/* ทองผาภูมิริเวอร์ ตั้งอยู่ที่จังหวัดกาญจนบุรี ติดแม่น้ำบรรยากาศดี และมีที่จอดรถฟรี */}
+                ที่พักให้บริการที่จอดรถฟรีเพื่อการเดินทางเข้าออกที่พักได้อย่างสะดวกสบาย รวมถึง Wi-Fi ฟรีให้ท่องเน็ตได้ทุกเมื่อ 
                 </p>
                 <p className="s-para">
-                  So when it comes to booking the perfect hotel, vacation
-                  rental, resort, apartment, guest house, or tree house, we’ve
-                  got you covered.
+                ที่พักตั้งอยู่ในย่านทองผาภูมิของกาญจนบุรี ผู้เข้าพักจึงได้อยู่ใกล้สถานที่ท่องเที่ยวน่าสนใจและร้านอาหารอร่อยๆ ทริปยังไม่จบถ้าไม่ได้แวะไปที่เที่ยวชื่อดังอย่าง สะพานข้ามแม่น้ำแคว ด้วยอีกสักที่ ที่พัก 3 ดาวนี้มีห้องอาหาร การเข้าพักจึงผ่อนคลายและสะดวกสบายสุดๆ
+
                 </p>
                 <a href="#" className="primary-btn about-btn">
-                  Read More
+                  {/* Read More */}
                 </a>
               </div>
             </div>
@@ -114,6 +111,19 @@ function Home() {
                   </div>
                   <div className="col-sm-6">
                     <img src="https://pix10.agoda.net/hotelImages/1730437/-1/e08df229e8584956623a269aabe29973.jpg?ca=7&ce=1&s=414x232" alt="" />
+                  </div>
+                  <br />
+                  <br />
+
+                  <br />
+
+                  <br />
+
+                  <div className="col-sm-6">
+                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/b3/13/62/arrivee-devant-le-ressort.jpg?w=1200&h=-1&s=1" alt="" />
+                  </div>
+                  <div className="col-sm-6">
+                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/b3/13/64/arrivee-devant-le-ressort.jpg?w=1200&h=-1&s=1" alt="" />
                   </div>
                 </div>
               </div>

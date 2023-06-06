@@ -66,15 +66,27 @@ const theme = createTheme();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const submitForm = async (data: any) => {
+      // console.log(data)
       const result = await dispatch(loginAccount(data)).unwrap();
-      if (result.msg === "OK") {
+      console.log(result)
+      if (result.msg === 'OK') {
         
         swal({
           title: "เข้าสู่ระบบสำเร็จ",
           icon: "success",
           buttons: [false, "ตกลง"],
         }).then(() => navigate("/rooms"));
-      } else {
+      }
+      // if (result.msg === "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง") {
+        
+      //   swal({
+      //     title: "รหัสไม่ถูกต้องs",
+      //     icon: "warning",
+      //     buttons: [false, "ตกลง"],
+      //   });
+      // }
+      
+      else {
         swal({
           // title: result.message,
           title: "รหัสไม่ถูกต้อง",

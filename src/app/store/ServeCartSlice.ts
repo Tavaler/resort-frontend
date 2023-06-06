@@ -41,6 +41,7 @@ export const addServeCartAsync = createAsyncThunk<any, AddServeCart >(
         formData.append("AccountId", value.accountId);
         formData.append("ServeId", value.serveId.toString());
         formData.append("Amount", value.amount.toString());
+        formData.append("CheckIn", value.checkIn.toString());
         // formData.append("DesiredDetail", value.desiredDetail);
         const  result  = await agent.ServeCart.AddCartServe(formData);
         return result;

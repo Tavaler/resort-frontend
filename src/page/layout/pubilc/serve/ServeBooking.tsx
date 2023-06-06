@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import Navbar from "../../../../components/Navbar";
 import {
-  useAppDispatch,
-  useAppSelector,
+  useAppDispatch, useAppSelector,
+  // useAppSelector,
 } from "../../../../app/store/configureStore";
 import useServeBooking from "../../../../app/hook/useServeBooking";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -20,9 +20,13 @@ import {
 } from "../../../../app/models/serveOrder";
 import agent from "../../../../app/api/agent";
 import { fetchServeOrderByIdAccount } from "../../../../app/store/serveOrderSlice";
+import moment from "moment-timezone";
+
 
 function ServeBooking() {
   const { account } = useAppSelector((state) => state.account);
+  const { account2 } = JSON.parse(localStorage.getItem("account")!);
+
   // const { carts } = useAppSelector(state => state.cartItem);
   // const { carts, subtotal } = useCart();
 
@@ -35,23 +39,24 @@ function ServeBooking() {
 
   useEffect(() => {
     if (!serveCart)
-    dispatch(fetchServeCartAsync(account?.accountId));
+    dispatch(fetchServeCartAsync(account2?.accountId));
     //  dispatch(itemPlusCartAsync(carts.))
     //  console.log({account})
   }, [dispatch, serveCart]); ///,carts]
 
   const DeleteCart = (id: any) => {
     Swal.fire({
-      // title: "ต้องการจะลบรายการสินค้าหรือไม่?",
-      text: "You won't be able to revert this!",
+      title: "ยืนยันที่จะลบหรือไม่?",
+      // text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your file has been deleted.", "success").then(
+        Swal.fire("ลบแล้ว!", "ยกเลิกการจองที่พักเรียบร้อย", "success").then(
           async () => {
             await dispatch(Delete(id)).then(() =>
               dispatch(fetchServeCartAsync(account?.accountId))
@@ -71,7 +76,7 @@ function ServeBooking() {
             (({
               idServeCart: cart.id,
               serveId: cart.serveId,
-              // accountId:   string;
+              checkIn:  cart.checkIn,
               amount: cart.amount,
 
               // accountId: account?.accountId,
@@ -130,15 +135,16 @@ function ServeBooking() {
                         alt="Cotton T-shirt"
                       />
                     </div>
-                    <div className="col-md-3 col-lg-3 col-xl-3">
+                    <div className="col-md-2 col-lg-2 col-xl-2">
                       <p className="lead fw-normal mb-2">{cart.name}</p>
-                      {/* <p>
-                      ประเภท:
-                      <span className="text-muted">
-                        {" "}
-                        {cart.fdCategoryName}
-                      </span>{" "}
-                    </p> */}
+                    </div>
+                    <div className="col-md-2 col-lg-2 col-xl-2">
+                    <p>
+                      {moment
+                    .utc(cart.checkIn)
+                    .tz("Asia/Bangkok")
+                    .format("DD-MM-YYYY HH:mm")}
+                    </p>
                     </div>
                     <div className="col-md-3 col-lg-3 col-xl-2 d-flex">
                       {/* <button
@@ -148,8 +154,9 @@ function ServeBooking() {
                       <MinusOutlined />
                     </button> */}
                       <p>ผู้ใช้บริการ</p>
+                      
 
-                      <input
+                      {/* <input
                         disabled={false}
                         id="form1"
                         min="0"
@@ -157,8 +164,8 @@ function ServeBooking() {
                         value={cart.amount}
                         type="number"
                         className="form-control form-control-sm"
-                      />
-
+                      /> */}
+                      <p> {cart.amount} </p>
                       {/* <button
                       className="btn btn-link px-2"
                       // onClick={() => onChangeNumberCartPlus(cart.id)}
@@ -167,7 +174,7 @@ function ServeBooking() {
                     </button> */}
                       <p>คน</p>
                     </div>
-                    <div className="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                    <div className="col-md-1 col-lg-1 col-xl-1 offset-lg-1">
                       <h5 className="mb-0">{cart.sumAmountPrice}</h5>
                     </div>
                     <div className="col-md-1 col-lg-1 col-xl-1 text-end">

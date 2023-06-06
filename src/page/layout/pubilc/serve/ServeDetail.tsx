@@ -10,15 +10,15 @@ import {
   resetDetailServe,
 } from "../../../../app/store/serveSlice";
 import { Formik } from "formik";
-import { Button, Carousel, Form, Input } from "antd";
+import { Button, Carousel, DatePicker, DatePickerProps, Form, Input } from "antd";
 import { addServeCartAsync } from "../../../../app/store/ServeCartSlice";
 import Swal from "sweetalert2";
 import { URLSever } from "../../../../util/util";
 // import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 function ServeDetail() {
-  // const { account } = JSON.parse(localStorage.getItem("account")!);
-  const { account } = useAppSelector((state) => state.account);
+  const { account } = JSON.parse(localStorage.getItem("account")!);
+  // const { account } = useAppSelector((state) => state.account);
 
   const { serveCart } = useAppSelector((state) => state.serveCart);
 
@@ -29,13 +29,14 @@ function ServeDetail() {
     (state) => state.serve
   );
 
-  const onChange = () => {};
+  const onChanges = () => {};
 
   // console.log(id)
 
   const value = {
     accountId: account?.accountId,
     serveId: id,
+    checkIn: "",
     amount: 0,
     // fdIsused: 1,
   };
@@ -46,6 +47,7 @@ function ServeDetail() {
 
   const AddServeCart = async (value: any) => {
     const result = await dispatch(addServeCartAsync(value)).unwrap();
+    console.log(result.data)
     console.log(result);
     if (result.message == "บันทึกข้อมูลสำเร็จ") {
       const Toast = Swal.mixin({
@@ -95,6 +97,14 @@ function ServeDetail() {
     // agent.HouseBooking.AddBooking(value)
   };
 
+  const onOk = (value: DatePickerProps['value']) => {
+    console.log('onOk: ', value);
+  };
+
+  // const onChange= (_, dateString) => {
+  //     setFieldValue("checkIn", dateString);
+  //   }
+  
 
   // from https://react-slick.neostack.com/docs/example/custom-arrows
   const SampleNextArrow = (props: { className: any; style: any; onClick: any; }) => {
@@ -200,23 +210,26 @@ function ServeDetail() {
                     )}
                   </center> */}
                   <div>
-                  <Carousel arrows {...settings}  afterChange={onChange} autoplay>
-                    {detailServe?.serveImgs.map((img) => {
-                      return (
-                        <img
-                          className="img-fluid"
-                          // style={{ height: "40%", width: "40%" }}
+                    <Carousel
+                      arrows
+                      {...settings}
+                      afterChange={onChanges}
+                      autoplay
+                    >
+                      {detailServe?.serveImgs.map((img) => {
+                        return (
+                          <img 
+                          key={img.serveImgId}
+                            className="img-fluid"
+                            // style={{ height: "40%", width: "40%" }}
 
-                          src={URLSever + img.image}
-                          alt={URLSever + img.image}
-                        />
-                      );
-                    })}
-
-                  </Carousel>                    
+                            src={URLSever + img.image}
+                            alt={URLSever + img.image}
+                          />
+                        );
+                      })}
+                    </Carousel>
                   </div>
-
-
 
                   <div className="rd-text">
                     <div className="rd-title">
@@ -248,8 +261,14 @@ function ServeDetail() {
                         <tr>
                           <td className="r-o">สถานะ:</td>
                           <td>
-                            {// detailacmd?.status == "1" ?
-                            detailServe?.isUsed == 1 ? <>ว่าง</> : <>ไม่ว่าง</>}
+                            {
+                              // detailacmd?.status == "1" ?
+                              detailServe?.isUsed == 1 ? (
+                                <>ว่าง</>
+                              ) : (
+                                <>ไม่ว่าง</>
+                              )
+                            }
                           </td>
                         </tr>
                         {/* <tr>
@@ -314,8 +333,24 @@ function ServeDetail() {
                       handleChange,
                       handleBlur,
                       handleSubmit,
+                      setFieldValue
                     }) => (
                       <Form onFinish={handleSubmit}>
+                        <Form.Item>
+                          <DatePicker
+                            showTime={{ format: 'HH:mm' }}
+                            
+                            onChange={
+                              (_, dateString) => {
+                                setFieldValue("checkIn", dateString);
+                              }
+                            }
+                            onOk={onOk}
+                            size="large"
+                           
+                          />
+                        </Form.Item>
+
                         <Form.Item wrapperCol={{ span: 4 }} label="">
                           <Input
                             status={
@@ -345,14 +380,16 @@ function ServeDetail() {
                             rows={4}
                           /> */}
 
-                        {// detailacmd?.status == "1" ?
-                        detailServe?.isUsed == 1 ? (
-                          <Button htmlType="submit">ยืนยัน</Button>
-                        ) : (
-                          <Button disabled htmlType="submit">
-                            ยืนยัน
-                          </Button>
-                        )}
+                        {
+                          // detailacmd?.status == "1" ?
+                          detailServe?.isUsed == 1 ? (
+                            <Button htmlType="submit">ยืนยัน</Button>
+                          ) : (
+                            <Button disabled htmlType="submit">
+                              ยืนยัน
+                            </Button>
+                          )
+                        }
                         {/* <Button disabled htmlType="submit">ยืนยัน</Button> */}
                       </Form>
                     )}

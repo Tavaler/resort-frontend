@@ -5,6 +5,7 @@ export interface HouseBooking {
     checkOut:           Date;
     desiredDetail:      string;
     createDate:         Date;
+    sumDate:            number; 
     sumPrice:           number;
     name:               string;
     accommodationTypes: string;

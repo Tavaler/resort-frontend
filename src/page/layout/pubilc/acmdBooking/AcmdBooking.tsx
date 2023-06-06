@@ -4,7 +4,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../app/store/configureStore";
-import { Delet, fetchHouseBookingAsync } from "../../../../app/store/HBookingSlice";
+import {
+  Delet,
+  fetchHouseBookingAsync,
+} from "../../../../app/store/HBookingSlice";
 import Navbar from "../../../../components/Navbar";
 import "../cart/cartV2.css";
 import useHBooking from "../../../../app/hook/useHBooking";
@@ -13,7 +16,7 @@ import { HBOrderCreate, HbOrderItem } from "../../../../app/models/HBOrder";
 
 function AcmdBooking() {
   const { account } = useAppSelector((state) => state.account);
-  const { hbookings ,subtotal } = useHBooking()
+  const { hbookings, subtotal } = useHBooking();
 
   // const { carts } = useAppSelector(state => state.crat);
   // const account = JSON.parse(localStorage.getItem("account")!);
@@ -21,8 +24,6 @@ function AcmdBooking() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-  
-
     //  console.log({account})
   }, [dispatch, hbookings]); ///,carts]
 
@@ -35,12 +36,13 @@ function AcmdBooking() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("ลบแล้ว!", "ยกเลิกการจองที่พักเรียบร้อย","success").then(
+        Swal.fire("ลบแล้ว!", "ยกเลิกการจองที่พักเรียบร้อย", "success").then(
           async () => {
             await dispatch(Delet(id)).then(() =>
-            dispatch(fetchHouseBookingAsync(account?.accountId))
+              dispatch(fetchHouseBookingAsync(account?.accountId))
             );
           }
         );
@@ -58,14 +60,14 @@ function AcmdBooking() {
   //   console.log(result);
 
   // }
-  
+
   const orderreuest: HBOrderCreate = {
     total: subtotal,
     accountId: account?.accountId,
     hbOrderItem: hbookings
       ? hbookings.map(
-          (cart) => 
-            ({
+          (cart) =>
+            (({
               idHBooking: cart.id,
               accommodationId: cart.accommodationId,
 
@@ -73,19 +75,15 @@ function AcmdBooking() {
 
               checkIn: cart.checkIn,
               checkOut: cart.checkOut,
-              desiredDetail: cart.desiredDetail
-
-    
-            } as HbOrderItem ||console.log(cart.id)) 
-            
+              desiredDetail: cart.desiredDetail,
+            } as HbOrderItem) || console.log(cart.id))
         )
       : [],
   };
-  
+
   const onClickOrder = async () => {
-    
     const result = await agent.HBOrder.create(orderreuest);
-    
+
     if (hbookings?.length! > 0) {
       Swal.fire({
         position: "center",
@@ -93,7 +91,7 @@ function AcmdBooking() {
         title: "บันทึกสำเร็จ",
         showConfirmButton: false,
         timer: 1000,
-      }).then(() => dispatch(fetchHouseBookingAsync(account?.accountId)))
+      }).then(() => dispatch(fetchHouseBookingAsync(account?.accountId)));
     } else {
       Swal.fire({
         position: "center",
@@ -138,9 +136,14 @@ function AcmdBooking() {
                     </div>
                     <div className="_column product-info">
                       <h4 className="product-name">{hb.name}</h4>
-                      <p className="product-desc">{hb.accommodationTypes}</p>
+                      <p className="product-desc">ประเภท : {hb.accommodationTypes}</p>
+                      <span className="">ระยะเวลาจอง : {hb.sumDate} วัน</span>
+
+                      {/* <p className="product-desc"> {hb.sumDate}</p> */}
+
+                      
                       <div className="price product-single-price">
-                        {hb.price}฿
+                        {hb.price}฿ 
                       </div>
                     </div>
                     <div
@@ -156,8 +159,11 @@ function AcmdBooking() {
                   onClick={()=>onChangeNumberCart(cart.id)} 
                   className="_btn _column product-plus">+</button> */}
                       </div>
-                      <button onClick={()=>DeleteCart(hb.id)} className="_btn entypo-trash product-remove">
-                        Remove
+                      <button
+                        onClick={() => DeleteCart(hb.id)}
+                        className="_btn entypo-trash product-remove"
+                      >
+                        ยกเลิกรายการ
                       </button>
                       <div className="price bg-primary product-total-price">
                         {hb.sumPrice}฿
@@ -173,8 +179,9 @@ function AcmdBooking() {
             );
           })}
 
-          <div className=" cart-totals ">
-            <div className="_column subtotal">
+        
+            
+            {/* <div className="_column subtotal">
               <div className="cart-totals-key">Subtotal</div>
               <div className="cart-totals-value">$0.00</div>
             </div>
@@ -192,14 +199,34 @@ function AcmdBooking() {
             </div>
             <div className="_column checkout">
               <button
-              onClick={()=>onClickOrder()}
-              className="_btn checkout-btn entypo-forward">
+                onClick={() => onClickOrder()}
+                className="_btn checkout-btn entypo-forward"
+              >
                 ยืนยัน
               </button>
+            </div> */}
+
+            <div className="card mb-4">
+              <div className="card-body p-4 d-flex flex-row">
+                <div className="form-outline flex-fill">
+                  {/* <input type="text" id="form1" className="form-control form-control-lg" /> */}
+                  <label className="form-label" htmlFor="form1">
+                    ราคารวม : {subtotal}฿
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  className="btn btn-outline-warning ms-3"
+                  onClick={() => onClickOrder()}
+                >
+                  ยืนยัน
+                </button>
+              </div>
             </div>
 
-
-          </div>
+            
+          
         </section>
       </div>
       {/* <div className="container">
