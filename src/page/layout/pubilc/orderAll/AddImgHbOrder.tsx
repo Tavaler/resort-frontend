@@ -34,6 +34,7 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
   const localaccount = JSON.parse(localStorage.getItem("account")!)
   
   const handleSubmitForm = async (value: any) => {
+    console.log("value",value)
       
       const result =  await agent.HBOrder.update(value)
 
@@ -85,7 +86,7 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
                           setImageUrl(url);
                       });
                       setFieldValue("FormFiles", info.file.originFileObj);
-                      console.log("orderId",id)
+                      console.log("hborderId",id)
                   }
                   
               };

@@ -39,7 +39,7 @@ function AcmdBooking() {
       cancelButtonText: "ยกเลิก"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("ลบแล้ว!", "ยกเลิกการจองที่พักเรียบร้อย", "success").then(
+        Swal.fire("ลบแล้ว!", "ลบเรียบร้อย", "success").then(
           async () => {
             await dispatch(Delet(id)).then(() =>
               dispatch(fetchHouseBookingAsync(account?.accountId))

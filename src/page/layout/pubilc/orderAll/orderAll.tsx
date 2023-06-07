@@ -15,31 +15,44 @@ import Item from "antd/es/descriptions/Item";
 import moment from "moment-timezone";
 import {
   fetchHBOrderById,
+  fetchHBOrderByIdAccount,
   resetDetailHB,
 } from "../../../../app/store/hbOrderSlice";
 import AddImgOrder from "./AddImgOrder";
 import AddImgServeOrder from "./AddImgServeOrder";
-import { fetchOrderById, resetOrderDetail } from "../../../../app/store/orderSlice";
+import { fetchOrderById, fetchOrderByIdAccount, resetOrderDetail } from "../../../../app/store/orderSlice";
+import { fetchServeOrderById, fetchServeOrderByIdAccount, resetServeOrderDetail } from "../../../../app/store/serveOrderSlice";
+import Swal from "sweetalert2";
+import agent from "../../../../app/api/agent";
+
 
 function orderAll() {
+  const { account } = JSON.parse(localStorage.getItem("account")!);
   const { Panel } = Collapse;
   const { hborder } = useHBorder();
   const { order } = useOrder();
+  const {
+    serveorder,
+  } = useServeorder();
 
   const {
     // hborderdetailLoaded,
     orderDetail,
   } = useAppSelector((state) => state.order);
-  
-  const {
-    serveorder,
-  } = useServeorder();
-  const dispatch = useAppDispatch();
-  
+
   const {
     // hborderdetailLoaded,
     hborderdetail,
   } = useAppSelector((state) => state.hbOrder);
+
+  const {
+    serveorderDetail
+  } = useAppSelector((state) => state.serveOrder);
+
+  
+
+  const dispatch = useAppDispatch();
+  
 
 
   const [openOrder, setOpenOrder] = useState(false);
@@ -48,8 +61,8 @@ function orderAll() {
   const [openOrder2, setOpenOrder2] = useState(false);
   const [oderId, setOrderId] = useState<string>("");
 
-  // const [openOrder3, setOpenOrder3] = useState(false);
-  // const [serveoderId, setServeOrderId] = useState<string>("");
+  const [openOrder3, setOpenOrder3] = useState(false);
+  const [serveoderId, setServeOrderId] = useState<string>("");
 
 /////hb
   useEffect(() => {
@@ -69,11 +82,11 @@ function orderAll() {
 
   //////serve
   useEffect(() => {
-    dispatch(fetchHBOrderById(hboderId));
+    dispatch(fetchServeOrderById(serveoderId));
     return () => {
-      dispatch(resetDetailHB());
+      dispatch(resetServeOrderDetail());
     };
-  }, [hborderdetail, hboderId, dispatch]);
+  }, [serveorderDetail, serveoderId, dispatch]);
 
 
   const [id, setId] = useState<string>("");
@@ -91,11 +104,11 @@ function orderAll() {
     setId2(id2);
   };
 
-  // const onClickOpenPaymentForm3 = (id3: any) => {
-  //   setOpenModalTransferPayment3(true);
-  //   setId3(id3);
-  // };
-  // console.log("hborder", hborder);
+  const onClickOpenPaymentForm3 = (id3: any) => {
+    setOpenModalTransferPayment3(true);
+    setId3(id3);
+  };
+
 
   const [openModalTransferPayment, setOpenModalTransferPayment] =
     useState<boolean>(false);
@@ -203,7 +216,7 @@ function orderAll() {
                     <FileAddOutlined />
                   </Button>
 
-                  <Button danger>
+                  <Button onClick={() => CancelHB(data.id)} danger>
                     <FileTextOutlined />
                   </Button>
                 </>
@@ -238,7 +251,7 @@ function orderAll() {
                   >
                     <FileAddOutlined />
                   </Button>
-                  <Button danger>
+                  <Button onClick={() => CancelHB(data.id)} danger>
                     <FileTextOutlined />
                   </Button>
                 </>
@@ -247,10 +260,9 @@ function orderAll() {
           </tr>
         </>
       );
+      
     else <p>{text}</p>;
   });
-
-
 
 
   const Ordertest = order?.map((data) => {
@@ -397,7 +409,7 @@ function orderAll() {
                 <FileTextOutlined />
               </Button>
 
-              <Button danger>
+              <Button onClick={() => CancelOrder(data.id)} danger>
                 <FileTextOutlined />
               </Button>
             </>
@@ -425,7 +437,9 @@ function orderAll() {
               >
                 <FileTextOutlined />
               </Button>
-              <Button danger>
+              <Button
+              onClick={() => CancelOrder(data.id)}
+              danger>
                 <FileTextOutlined />
               </Button>
             </>
@@ -434,155 +448,147 @@ function orderAll() {
         {/* <td>@mdo</td> */}
       </tr>
     );
+    else <p>{text}</p>;
+
   });
             
+  const Servertest =               
+    serveorder?.map((data) => {
+    // if(data.status == 0)
+    if (data.status != PaymentStatus.CancelTransaction)
+    return (
+      <tr key={data.id}>
+        <th scope="row">{data.name}</th>
+        <th scope="row">{data.amount} คน</th>
 
-  // const hborderText =() => {
-  //   hborder?.map((data) => {
-  //     if (data.status != PaymentStatus.CancelTransaction)
-  //       return (
-  //         <>
-  //           <tr key={data.id}>
-  //             <th scope="row">{data.name}</th>
-  //             <th scope="row">{data.sumDate} วัน</th>
+        <td>
+          {data.image ? (
+            <img
+              src={data.image}
+              style={{ height: "200px" }}
+              alt=""
+            />
+          ) : (
+            <img
+              src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+              style={{ height: "20rem" }}
+              alt=""
+            />
+          )}
+        </td>
+        <td>
+          <td>
+            {/* {data.status} */}
+            {
+              // products?.isUsed == "1" ?
+              data?.status == PaymentStatus.WorkInProgress ? (
+                <Button danger>ยังไม่ได้ชำระ</Button>
+              ) : data?.status == PaymentStatus.WaitingForCheck ? (
+                <Button
+                  type="primary"
+                  style={{
+                    color: "#ffc107",
+                    borderColor: "#ffc107",
+                  }}
+                  ghost
+                >
+                  รอตรวจสอบ
+                </Button>
+              ) : data?.status ==
+                PaymentStatus.SuccessfulTransaction ? (
+                <Button
+                  type="primary"
+                  style={{
+                    color: "#198754",
+                    borderColor: "#198754",
+                  }}
+                  ghost
+                >
+                  ชำระเงินแล้ว
+                </Button>
+              ) : (
+                // data?.status == PaymentStatus.CancelTransaction ?
+                <Button
+                  type="primary"
+                  style={{
+                    color: "#6c757d",
+                    borderColor: "#6c757d",
+                  }}
+                  ghost
+                >
+                  ยกเลิกรายการแล้ว
+                </Button>
+              )
+            }
+          </td>
+        </td>
+        <td>
+          {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
+            <Button
+              type="primary"
+              ghost
+              // onClick={() => navigate(`/ordetail/${data.id}`)}
+              onClick={() => {
+                setServeOrderId(data.id);
+                setOpenOrder3(true);
+              }}
+            >
+              {/* href={`/menudetail/${menu.fdId}`} */}
+              <FileTextOutlined />
+            </Button>
+          ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
+            <>
+              <Button
+                type="primary"
+                ghost
+                ///detail
+                onClick={() => {
+                  console.log(data.id);
+                  setServeOrderId(data.id);
+                  setOpenOrder3(true);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
 
-  //             <td>
-  //               {data.image ? (
-  //                 <img
-  //                   src={data.image}
-  //                   style={{ height: "200px" }}
-  //                   alt=""
-  //                 />
-  //               ) : (
-  //                 <img
-  //                   src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
-  //                   style={{ height: "20rem" }}
-  //                   alt=""
-  //                 />
-  //               )}
-  //             </td>
-  //             <td>
-  //               {/* {data.status} */}
-  //               {
-  //                 // products?.isUsed == "1" ?
-  //                 data?.status == PaymentStatus.WorkInProgress ? (
-  //                   <Button danger>ยังไม่ได้ชำระ</Button>
-  //                 ) : data?.status ==
-  //                   PaymentStatus.WaitingForCheck ? (
-  //                   <Button
-  //                     type="primary"
-  //                     style={{
-  //                       color: "#ffc107",
-  //                       borderColor: "#ffc107",
-  //                     }}
-  //                     ghost
-  //                   >
-  //                     รอตรวจสอบ
-  //                   </Button>
-  //                 ) : data?.status ==
-  //                   PaymentStatus.SuccessfulTransaction ? (
-  //                   <Button
-  //                     type="primary"
-  //                     style={{
-  //                       color: "#198754",
-  //                       borderColor: "#198754",
-  //                     }}
-  //                     ghost
-  //                   >
-  //                     ชำระเงินแล้ว
-  //                   </Button>
-  //                 ) : (
-  //                   // data?.status == PaymentStatus.CancelTransaction ?
-  //                   <Button
-  //                     type="primary"
-  //                     style={{
-  //                       color: "#6c757d",
-  //                       borderColor: "#6c757d",
-  //                     }}
-  //                     ghost
-  //                   >
-  //                     ยกเลิกรายการแล้ว
-  //                   </Button>
-  //                 )
-  //               }
-  //             </td>
-  //             <td>
-  //               {data?.status == PaymentStatus.CancelTransaction ? ( /// ยกเลิก
-  //                 <Button
-  //                   type="primary"
-  //                   ghost
-  //                   // onClick={() => navigate(`/ordetail/${data.id}`)}
-  //                   onClick={() => {
-  //                     setHBOrderId(data.id);
-  //                     setOpenOrder(true);
-  //                   }}
-  //                 >
-  //                   {/* href={`/menudetail/${menu.fdId}`} */}
-  //                   <FileTextOutlined />
-  //                 </Button>
-  //               ) : data?.status == PaymentStatus.WaitingForCheck ? ( ///รอเช็ค
-  //                 <>
-  //                   <Button
-  //                     type="primary"
-  //                     ghost
-  //                     ///detail
-  //                     onClick={() => {
-  //                       setHBOrderId(data.id);
-  //                       console.log(data.id);
-  //                       setOpenOrder(true);
-  //                     }}
-  //                   >
-  //                     <FileAddOutlined />
-  //                   </Button>
-
-  //                   <Button danger>
-  //                     <FileTextOutlined />
-  //                   </Button>
-  //                 </>
-  //               ) : (
-  //                 <>
-  //                   <Button
-  //                     type="primary"
-  //                     ghost
-  //                     ///detail
-  //                     // onClick={() => navigate(`/ordetail/${data.id}`)}
-  //                     onClick={() => {
-  //                       setHBOrderId(data.id);
-  //                       console.log(data.id);
-  //                       setOpenOrder(true);
-  //                     }}
-  //                   >
-  //                     <FileTextOutlined />
-  //                   </Button>
-  //                   <Button
-  //                     className=" btn-outline-success"
-  //                     // type=""
-  //                     style={
-  //                       {
-  //                         // color: "greenyellow",
-  //                         // borderColor: "greenyellow",
-  //                       }
-  //                     }
-  //                     ///addimage
-  //                     onClick={() => {
-  //                       onClickOpenPaymentForm(data.id);
-  //                     }}
-  //                   >
-  //                     <FileAddOutlined />
-  //                   </Button>
-  //                   <Button danger>
-  //                     <FileTextOutlined />
-  //                   </Button>
-  //                 </>
-  //               )}
-  //             </td>
-  //           </tr>
-  //         </>
-  //       );
-  //     else <p>{text}</p>;
-  //   })
-  // }
-  // console.log(serveorder)
+              <Button onClick={() => CancelServer(data.id)} danger>
+                <FileTextOutlined />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                type="primary"
+                ghost
+                ///detail
+                // onClick={() => navigate(`/ordetail/${data.id}`)}
+                onClick={() => {
+                  console.log(data.id);
+                  setServeOrderId(data.id);
+                  setOpenOrder3(true);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
+              <Button
+                type="primary"
+                ///addimage
+                onClick={() => {
+                  onClickOpenPaymentForm3(data.id);
+                }}
+              >
+                <FileTextOutlined />
+              </Button>
+              <Button onClick={() => CancelServer(data.id)} danger>
+                <FileTextOutlined />
+              </Button>
+            </>
+          )}
+        </td>
+      </tr>
+    );
+    
+  });
 
   const onChange = (key: string | string[]) => {
     console.log(key);
@@ -686,6 +692,160 @@ function orderAll() {
       </tr>
     );
   });
+
+  const servertest = serveorderDetail?.orderItem.map((data) => {
+    return (
+      <tr className="shadow p-3 mb-5 bg-white rounded" key={data.id}>
+        <td className="md-2">
+          <div className="d-flex-order align-items-center">
+            {data.productImage[0] ? (
+              <img
+                className="rounded-circle"
+                src={
+                  // "https://localhost:5000/images/" +
+                  data.productImage
+                }
+                style={{ width: "45px", height: "45px" }}
+                alt=""
+              />
+            ) : (
+              <img
+                className="rounded-circle"
+                src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
+                style={{ width: "45px", height: "45px" }}
+                alt=""
+              />
+            )}
+          </div>
+        </td>
+        <td className="md-2">
+          <p className="fw-normal mb-1">{data.serveName}</p>
+        </td>
+
+        <td className="md-2">{data.sumAmountPrice} บาท</td>
+        {/* <td>{products.stock} ชิ้น</td> */}
+        <td className="md-2">{data.amount} </td>
+        <td>
+          {moment
+            .utc(data.checkIn)
+            .tz("Asia/Bangkok")
+            // .format("DD-MM-YYYY HH:mm:ss"
+            .format("DD-MM-YYYY HH:mm")}{" "}
+        </td>
+      </tr>
+    );
+  });
+
+
+
+  const CancelHB = (id: any) => {
+    Swal.fire({
+      title: "ยืนยันที่จะยกเลิกหรือไม่?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("ยกเลิกแล้ว!", "ยกเลิกเรียบร้อย", "success").then(
+          async () => {
+            console.log(id)
+            console.log(account?.accountId)
+            await agent.HBOrder.cancelStatusOrder({id})
+              dispatch(fetchHBOrderByIdAccount(account?.accountId))
+            
+          }
+        );
+      }
+    });
+  };
+
+  const CancelOrder = (id: any) => {
+    Swal.fire({
+      title: "ยืนยันที่จะยกเลิกหรือไม่?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("ยกเลิกแล้ว!", "ยกเลิกเรียบร้อย", "success").then(
+          async () => {
+            console.log(id)
+            console.log(account?.accountId)
+            await agent.Order.cancelStatusOrder({id})
+              dispatch(fetchOrderByIdAccount(account?.accountId))
+            
+          }
+        );
+      }
+    });
+  };
+
+  const CancelServer = (id: any) => {
+    Swal.fire({
+      title: "ยืนยันที่จะยกเลิกหรือไม่?",
+      // text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("ยกเลิกแล้ว!", "ยกเลิกเรียบร้อย", "success").then(
+          async () => {
+            console.log(id)
+            console.log(account?.accountId)
+            await agent.ServeOrder.cancelStatusOrder({id})
+              dispatch(fetchServeOrderByIdAccount(account?.accountId))
+            
+          }
+        );
+      }
+    });
+  };
+  
+
+
+
+  // const CancelHB = async (id: any) => {
+  //   console.log("id", id);
+  //   console.log("account", account?.accountId);
+
+    
+
+  //   let result = await agent.HBOrder.cancelStatusOrder({id});
+  //   // let result = await dispatch(AccmdChangeStatus("b4c8d7f6a1da48488b93f00c"))
+  //   console.log(result);
+  //   dispatch(fetchHBOrderByIdAccount(account?.accountId))
+  //   // if (!state) result = await dispatch(CreateMenu(data)).unwrap();
+
+  //   if (result.statusCode == 200) {
+  //     swal({
+  //       title: "ยกเลิกสำเร็จ",
+  //       icon: "success",
+  //       buttons: [false, "ตกลง"],
+  //     })
+  //       .then(() => navigate("/profile"))
+  //       .then(() =>     dispatch(fetchHBOrderByIdAccount(account?.accountId))
+  //       );
+  //   } else {
+  //     swal({
+  //       title: result.message,
+  //       icon: "warning",
+  //       buttons: [false, "ตกลง"],
+  //     });
+  //   }
+  // };
+
 
   return (
     // <>
@@ -793,7 +953,7 @@ function orderAll() {
         </Modal>
 
         <Modal
-          title="รายระเอียดการจอง"
+          title="รายระเอียดการสั่งอาหาร"
           centered
           open={openOrder2}
           onOk={() => {
@@ -833,8 +993,8 @@ function orderAll() {
               <br />
               <Item>
                 <h3>หลักฐานการโอน</h3>
-                {hborderdetail?.payimage ? (
-                  <img width={300} height={300} src={hborderdetail?.payimage} />
+                {orderDetail?.payimage ? (
+                  <img width={300} height={300} src={orderDetail?.payimage} />
                 ) : (
                   <img
                     src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
@@ -850,22 +1010,22 @@ function orderAll() {
         </Modal>
 
         <Modal
-          title="รายระเอียดการจอง"
+          title="รายระเอียดการขอใช้บริการ"
           centered
-          open={openOrder}
+          open={openOrder3}
           onOk={() => {
-            setOpenOrder(false);
-            setHBOrderId("");
+            setOpenOrder3(false);
+            setServeOrderId("");
           }}
           onCancel={() => {
-            setOpenOrder(false);
-            setHBOrderId("");
+            setOpenOrder3(false);
+            setServeOrderId("");
           }}
           width={1000}
         >
-          {hborderdetail ? (
+          {serveorderDetail ? (
             <>
-              <p>id : {hborderdetail?.id}</p>
+              <p>id : {serveorderDetail?.id}</p>
               {/* <p>some contents...</p> */}
 
               <table
@@ -885,13 +1045,13 @@ function orderAll() {
                     {/* <th>การจัดการ</th> */}
                   </tr>
                 </thead>
-                <tbody>{producttest}</tbody>
+                <tbody>{servertest}</tbody>
               </table>
               <br />
               <Item>
                 <h3>หลักฐานการโอน</h3>
-                {hborderdetail?.payimage ? (
-                  <img width={300} height={300} src={hborderdetail?.payimage} />
+                {serveorderDetail?.payimage ? (
+                  <img width={300} height={300} src={serveorderDetail?.payimage} />
                 ) : (
                   <img
                     src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
@@ -944,78 +1104,8 @@ function orderAll() {
               </tr>
             </thead>
             <tbody>
-              {serveorder?.map((data) => {
-                // if(data.status == 0)
-                return (
-                  <tr key={data.id}>
-                    <th scope="row">{data.name}</th>
-                    <th scope="row">{data.amount} คน</th>
-
-                    <td>
-                      {data.image ? (
-                        <img
-                          src={data.image}
-                          style={{ height: "200px" }}
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src="http://ird.rmuti.ac.th/2020/world/upload/post/picture/thumb/IRD010221C00006/noimg.png"
-                          style={{ height: "20rem" }}
-                          alt=""
-                        />
-                      )}
-                    </td>
-                    <td>
-                      <td>
-                        {/* {data.status} */}
-                        {
-                          // products?.isUsed == "1" ?
-                          data?.status == PaymentStatus.WorkInProgress ? (
-                            <Button danger>ยังไม่ได้ชำระ</Button>
-                          ) : data?.status == PaymentStatus.WaitingForCheck ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#ffc107",
-                                borderColor: "#ffc107",
-                              }}
-                              ghost
-                            >
-                              รอตรวจสอบ
-                            </Button>
-                          ) : data?.status ==
-                            PaymentStatus.SuccessfulTransaction ? (
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#198754",
-                                borderColor: "#198754",
-                              }}
-                              ghost
-                            >
-                              ชำระเงินแล้ว
-                            </Button>
-                          ) : (
-                            // data?.status == PaymentStatus.CancelTransaction ?
-                            <Button
-                              type="primary"
-                              style={{
-                                color: "#6c757d",
-                                borderColor: "#6c757d",
-                              }}
-                              ghost
-                            >
-                              ยกเลิกรายการแล้ว
-                            </Button>
-                          )
-                        }
-                      </td>
-                    </td>
-                    <td>@mdo</td>
-                  </tr>
-                );
-              })}
+              {Servertest}
+              
             </tbody>
           </table>
         }

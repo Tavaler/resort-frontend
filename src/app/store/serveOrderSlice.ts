@@ -1,22 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // import { ConfirmOrder, Order } from "../models/Order";
 import agent from "../api/agent";
-import { ServeOrder } from "../models/serveOrder";
+import { ServeOrder, ServerOrderID } from "../models/serveOrder";
+// import { OrderID } from "../models/order";
 
 
 interface ServeOrderState {
   serveorder: ServeOrder[] | null;
   serveorderLoaded: boolean;
+
   sv : ServeOrder[] | null;
   svLoaded:boolean;
+
+  serveorderDetail: ServerOrderID | null
+  serveorderDetailLoaded: boolean;
 //   orderConfirm: ConfirmOrder[] | null
 }
 
 const initialState: ServeOrderState = {
-    serveorder: null,
-    serveorderLoaded: false,
-    sv: null,
-    svLoaded: false
+  serveorder: null,
+  serveorderLoaded: false,
+  sv: null,
+  svLoaded: false,
+
+
+  serveorderDetail: null,
+  serveorderDetailLoaded: false
 };
 
 export const fetchServeOrderByIdAccount = createAsyncThunk<any, any>(
@@ -86,6 +95,9 @@ export const fetchServeOrderByIdAccount = createAsyncThunk<any, any>(
       resetServeOrder: (state) => {
         state.serveorderLoaded = false;
       },
+      resetServeOrderDetail: (state) => {
+        state.serveorderDetailLoaded = false;
+      },
       // resetHbOrder0: (state) => {
       //   state.hborderLoaded0 = false;
       // },
@@ -112,6 +124,11 @@ export const fetchServeOrderByIdAccount = createAsyncThunk<any, any>(
         state.serveorder = action.payload.data
         state.serveorderLoaded = true
       });
+
+      builder.addCase(fetchServeOrderById.fulfilled, (state, action) => {
+        state.serveorderDetail = action.payload.data;
+          state.serveorderDetailLoaded = true;
+        });
       
   
   
@@ -135,4 +152,4 @@ export const fetchServeOrderByIdAccount = createAsyncThunk<any, any>(
     },
   });
   
-  export const { resetServeOrder } = serveorderSlice.actions;
+  export const { resetServeOrder ,resetServeOrderDetail } = serveorderSlice.actions;

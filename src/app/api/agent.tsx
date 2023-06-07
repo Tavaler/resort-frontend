@@ -170,9 +170,11 @@ const HBOrder = {
 
 
     create:(value: any) =>requests.post('HBOrder/CreateHBOrder', value),
-    putconfirm:(value:any) => requests.put("HBOrder/ConfirmStatusOrder", createFormData(value)),
-    cancelStatusOrder:(value:any) => requests.put("HBOrder/CancelStatusOrder", createFormData(value)),
-    SuccessStatusOrder:(value:any) => requests.put("HBOrder/SuccessStatusOrder", createFormData(value)),
+    putconfirm:(value:any) => requests.put("HBOrder/ConfirmStatusOrder/", createFormData(value)),
+    cancelStatusOrder:(id:any) => requests.put("HBOrder/CancelStatusOrder", createFormData(id)),
+    aginStatusOrder:(id:any) => requests.put("HBOrder/ConfirmStatusOrder", createFormData(id)),
+    
+    SuccessStatusOrder:(value:any) => requests.put("HBOrder/SuccessStatusOrder/", createFormData(value)),
     // GetHBOrders?currentPage=1&pageSize=10
     // GetByIdAcmd: (id: any) => requests.get(`Accommodation/${id}`) ,
 }
@@ -186,8 +188,15 @@ const Order = {
     // getConfirm: () => requests.get('OrderAccount/GetConfirmOrder' ),
     create:(value: any) =>requests.post('Orders/CreateOrder', value),
     putconfirm:(value:any) => requests.put("Orders/ConfirmStatusOrder", createFormData(value)),
-    cancelStatusOrder:(value:any) => requests.put("Orders/CancelStatusOrder", createFormData(value)),
+
+    aginStatusOrder:(id:any) => requests.put("Orders/ConfirmStatusOrder", createFormData(id)),
+    cancelStatusOrder:(id:any) => requests.put("Orders/CancelStatusOrder", createFormData(id)),
     SuccessStatusOrder:(value:any) => requests.put("Orders/SuccessStatusOrder", createFormData(value)),
+
+    goingorder:(id:any) => requests.put("Orders/GoingOrder", createFormData(id)),
+    comingorder:(id:any) => requests.put("Orders/ComingOrder", createFormData(id)),
+    successorder:(value:any) => requests.put("Orders/SuccessOrder", createFormData(value)),
+    
     // GetHBOrders?currentPage=1&pageSize=10
     // GetByIdAcmd: (id: any) => requests.get(`Accommodation/${id}`) ,
 }
@@ -203,10 +212,13 @@ const ServeOrder = {
     getAll: () => requests.get('ServeOrder/GetOrders'),
     GetById: (id: any) => requests.get(`ServeOrder/GetById/${id}`) ,
     // /HBOrder/GetByAccountId/dd?pageSize=6
+    update: (value: any) => requests.put("ServeOrder/PaymentOrder",createFormData(value) ),
     GetByIdAccount: (id: any) => requests.get(`ServeOrder/GetByAccountId/${id}`) ,
     create:(value: any) =>requests.post('ServeOrder/CreateOrder', value),
     putconfirm:(value:any) => requests.put("ServeOrder/ConfirmStatusOrder", createFormData(value)),
-    cancelStatusOrder:(value:any) => requests.put("ServeOrder/CancelStatusOrder", createFormData(value)),
+
+    aginStatusOrder:(id:any) => requests.put("ServeOrder/ConfirmStatusOrder", createFormData(id)),
+    cancelStatusOrder:(id:any) => requests.put("ServeOrder/CancelStatusOrder", createFormData(id)),
     SuccessStatusOrder:(value:any) => requests.put("ServeOrder/SuccessStatusOrder", createFormData(value)),
 }
 

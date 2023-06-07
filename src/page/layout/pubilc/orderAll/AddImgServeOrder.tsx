@@ -5,12 +5,13 @@ import * as Yup from 'yup';
 import { Badge, Button, Col, Divider, Form, message, Modal, Row, Upload, UploadProps } from 'antd'
 
 import AppSwal from "../../../../components/charts/AppSwal";
-import { fetchHBOrderByIdAccount } from "../../../../app/store/hbOrderSlice";
+// import { fetchHBOrderByIdAccount } from "../../../../app/store/hbOrderSlice";
 import { ErrorMessage, Formik } from "formik";
 import { LoadingOutlined, CloseOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { Ts, beforeUploadAntd, getBase64 } from "../../../../util/util";
 import { BiCloudUpload } from "react-icons/bi";
+import { fetchServeOrderByIdAccount } from "../../../../app/store/serveOrderSlice";
 
 
 interface Props {
@@ -26,7 +27,7 @@ const ValidateSchema = Yup.object().shape({
   FormFiles: Yup.string().required('กรุณาเลือกไฟล์'),
 });
 // , setOrderId 
-const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
+const AddImgServeOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
   const dispatch = useAppDispatch();
   const [, contextHolder] = message.useMessage();
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -35,7 +36,7 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
   
   const handleSubmitForm = async (value: any) => {
       
-      const result =  await agent.HBOrder.update(value)
+      const result =  await agent.ServeOrder.update(value)
 
       console.log("value",value)
       console.log(result)
@@ -46,7 +47,7 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
                   setOpenModal(false);
                    setOrderId("");
                   setImageUrl("");
-                  dispatch(fetchHBOrderByIdAccount(localaccount.id));
+                  dispatch(fetchServeOrderByIdAccount(localaccount.id));
               },
               title: "บันทึกข้อมูลสำเร็จ",
               timer: 1500
@@ -85,7 +86,7 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
                           setImageUrl(url);
                       });
                       setFieldValue("FormFiles", info.file.originFileObj);
-                      console.log("orderId",id)
+                      console.log("serveorderId",id)
                   }
                   
               };
@@ -171,4 +172,4 @@ const AddImgHbOrder = ({ openModal, setOpenModal, id, setOrderId  }: Props) => {
   )
 }
 
-export default AddImgHbOrder
+export default AddImgServeOrder

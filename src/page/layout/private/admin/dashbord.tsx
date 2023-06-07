@@ -15,20 +15,22 @@ import Column3D from '../Charts/Column3D';
 // import useReport from '../../hooks/useReport';
 import useProduct from '../../../../app/hook/useProduct';
 import useUser from '../../../../app/hook/useUser';
-// import * as XLSX from 'xlsx';
-import { FileExcelOutlined ,PrinterOutlined,FilePdfOutlined} from '@ant-design/icons';
+import { FileExcelOutlined ,PrinterOutlined,
+  // FilePdfOutlined
+} from '@ant-design/icons';
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 // import { PDFDownloadLink } from "@react-pdf/renderer";
-import PDFReport from '../PDF/PDFReport ';
+import * as XLSX from 'xlsx';
+// import PDFReport from '../PDF/PDFReport ';
 // import { Community, ProductStatistics } from '../../../Model/Report';
-import { GetProductStatistics } from "../../../../app/models/report";
+// import { GetProductStatistics } from "../../../../app/models/report";
 
 // import Chart2 from '../Charts/Column2D';
 import LayoutAdmin from './LayoutAdmin';
 import useReport from '../../../../app/hook/useReport';
 // import agent from '../../../../app/api/agent';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
 import Chart2 from '../Charts/Chart2';
 
 ReactFC.fcRoot(FusionCharts, Charts ,FusionTheme);
@@ -56,6 +58,15 @@ const Dashbord = () => {
         value: any;
         color: any;
     }
+
+
+    const handleOnExport = () => {
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+      //const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataChartProductStatistics); 
+      XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
+      XLSX.writeFile(wb, "MyExcel.xlsx");
+    };
 
     //value: info.product.communityGroupID,
 
@@ -161,13 +172,7 @@ const Dashbord = () => {
         <Ts>เลือก</Ts>
     </Dropdown.Button>;
 
-// const handleOnExport = () => {
-//     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-//     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-//     //const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataChartProductStatistics); 
-//     XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
-//     XLSX.writeFile(wb, "MyExcel.xlsx");
-//   };
+
 
   const componentRef = useRef(null);
 
@@ -276,13 +281,13 @@ const Dashbord = () => {
               Print
             </Button>
             <Button
-              // onClick={handleOnExport}
+              onClick={handleOnExport}
               className="mr-2"
             >
               <FileExcelOutlined />
               Excel
             </Button>
-            <PDFDownloadLink
+            {/* <PDFDownloadLink
               document={
                 <PDFReport
                   report={
@@ -300,7 +305,7 @@ const Dashbord = () => {
               >
                 <FilePdfOutlined /> PDF
               </Button>
-            </PDFDownloadLink>
+            </PDFDownloadLink> */}
           </div>
 
           <div ref={componentRef}>
@@ -322,7 +327,7 @@ const Dashbord = () => {
               </Col>
               <Col className="gutter-row center" span={12}>
                 <Card
-                  title="สถิติการขาย"
+                  title="สถิติการขายรายเดือน"
                   className="text-st"
                   bordered={false}
                   style={{ width: "100%" }}
@@ -341,7 +346,7 @@ const Dashbord = () => {
 
               <Col className="gutter-row center" span={12}>
                 <Card
-                  title="สถิติชุมชน"
+                  title="ผลรวมสถิติขายตลอดทั้งปี"
                   className="text-st"
                   bordered={false}
                   style={{ width: "100%" }}
@@ -355,7 +360,6 @@ const Dashbord = () => {
                   />
                 </Card>
               </Col>
-              
             </Row>
           </div>
         </Space>

@@ -27,3 +27,25 @@ export interface ServeOrderItem {
     // accountId:   string;
     amount:      number;
 }
+
+
+export interface ServerOrderID {
+    id:         string;
+    status:     number;
+    payimage:   null;
+    total:      number;
+    createDate: Date;
+    orderItem:  OrderItem[];
+}
+
+export interface OrderItem {
+    id:             string;
+    checkIn:        Date;
+    amount:         number;
+    sumAmountPrice: number;
+    serveId:        number;
+    serveName:      string;
+    productPrice:   number;
+    productImage:   string;
+}
+
