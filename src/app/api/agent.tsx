@@ -237,12 +237,22 @@ const Report = {
        return requests.get(`Report/GetsalesCommunityDTO`)
     },
 
-
     getAccmdStatistics: () => requests.get("Report/GetAccmdStatistics"),
     getAccmdSalesStatistics: () => requests.get("Report/GetAccmdSalesStatistics"),
 
+    getReportAcmd: (date : any = null) => {
+        if(date) return requests.get(`Report/GetsalesCommunityDTO?date=${date}`)
+       return requests.get(`Report/GetsalesCommunityDTO`)
+    },
+
+
+
     getServeStatistics: () => requests.get("Report/GetServeStatistics"),
     getServeSalesStatistics: () => requests.get("Report/GetServeSalesStatistics"),
+    getReportServe: (date : any = null) => {
+        if(date) return requests.get(`Report/GetsalesCommunityDTO?date=${date}`)
+       return requests.get(`Report/GetsalesCommunityDTO`)
+    },
 
     
 }
